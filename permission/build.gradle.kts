@@ -1,6 +1,9 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.android.kotlin.multiplatform.library)
+    kotlin("multiplatform")
+    id("com.android.library") // ✅ This enables the Android block
+    id("com.vanniktech.maven.publish") version "0.31.0"
 }
 
 kotlin {
@@ -8,11 +11,7 @@ kotlin {
     // Target declarations - add or remove as needed below. These define
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
-    androidLibrary {
-        namespace = "tech.kotlinlang.permission"
-        compileSdk = 35
-        minSdk = 24
-    }
+    androidTarget()
 
     // For iOS targets, this is also where you should
     // configure native binary output. For more information, see:
@@ -66,5 +65,66 @@ kotlin {
             // KMP dependencies declared in commonMain.
         }
     }
+}
 
+android {
+    compileSdk = 35
+    namespace = "tech.kotlinlang.permission"
+
+    defaultConfig {
+        minSdk = 24
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17  // ✅ Set Java to 17
+        targetCompatibility = JavaVersion.VERSION_17  // ✅ Set Java to 17
+    }
+
+    kotlin {
+        jvmToolchain(17) // ✅ Correct way to set Kotlin JVM target
+    }
+
+    publishing {
+        singleVariant("release") {  // This enables publishing for the "release" variant
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+mavenPublishing {
+    coordinates(
+        "tech.kotlinlang",
+        "permission",
+        "0.0.3"
+    )
+
+    pom {
+        name.set("permission")
+        description.set("A Compose Multiplatform library to request permissions for both Android and iOS.")
+        inceptionYear.set("2025")
+        url.set("https://kotlinlang.tech")
+
+        licenses {
+            license {
+                name.set("MIT")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("reyazoct")
+                name.set("Reyaz Ahmad")
+                email.set("reyazoct@gmail.com")
+            }
+        }
+
+        scm {
+            url.set("https://github.com/reyazoct/Kmm-Permissions")
+        }
+    }
+
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
 }
