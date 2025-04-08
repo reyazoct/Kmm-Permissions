@@ -17,7 +17,8 @@ import kotlin.coroutines.resume
 
 class IosLocationManager : NSObject(), CLLocationManagerDelegateProtocol {
 
-    private val locationManager = CLLocationManager()
+    private val locationManager by lazy { CLLocationManager() }
+
     private var locationPermissionContinuation: (CancellableContinuation<LocationPermissionResult>)? =
         null
 
@@ -42,9 +43,12 @@ class IosLocationManager : NSObject(), CLLocationManagerDelegateProtocol {
         locationPermissionContinuation = null
     }
 
-    private fun checkLocationPermission(status: CLAuthorizationStatus): LocationPermissionResult {
+    fun checkLocationPermission(status: CLAuthorizationStatus): LocationPermissionResult {
         return when (status) {
-            kCLAuthorizationStatusAuthorizedAlways, kCLAuthorizationStatusAuthorizedWhenInUse -> LocationPermissionResult.Granted
+            kCLAuthorizationStatusAuthorizedAlways, kCLAuthorizationStatusAuthorizedWhenInUse -> {
+                if (locationManager.accuracyAuthorization.value == 1L) LocationPermissionResult.Granted.Approximate
+                else LocationPermissionResult.Granted.Precise
+            }
             kCLAuthorizationStatusRestricted, kCLAuthorizationStatusDenied -> LocationPermissionResult.NotAllowed
             else -> LocationPermissionResult.Denied
         }

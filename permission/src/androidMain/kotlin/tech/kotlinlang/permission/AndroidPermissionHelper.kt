@@ -31,10 +31,16 @@ class AndroidPermissionHelper(
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            LocationPermissionResult.Granted
+            LocationPermissionResult.Granted.Precise
+        } else if (ContextCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            LocationPermissionResult.Granted.Approximate
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(
                 activity,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_COARSE_LOCATION
             )
         ) {
             LocationPermissionResult.NotAllowed
@@ -44,13 +50,7 @@ class AndroidPermissionHelper(
     }
 
     private suspend fun requestLocationPermission(): LocationPermissionResult {
-        val activity = permissionInitiation.getActivity()
-        val result = permissionInitiation.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-        return if (result) LocationPermissionResult.Granted
-        else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            LocationPermissionResult.NotAllowed
-        } else {
-            LocationPermissionResult.Denied
-        }
+        permissionInitiation.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        return checkLocationPermission()
     }
 }

@@ -1,13 +1,9 @@
 package tech.kotlinlang.permission
 
 import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
-import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
-import platform.CoreLocation.kCLAuthorizationStatusDenied
-import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import tech.kotlinlang.permission.result.LocationPermissionResult
 
-class IosPermissionHelper: PermissionHelper {
+class IosPermissionHelper : PermissionHelper {
 
     private val locationManager by lazy { IosLocationManager() }
 
@@ -26,11 +22,7 @@ class IosPermissionHelper: PermissionHelper {
     }
 
     private fun checkLocationPermission(): LocationPermissionResult {
-        return when (CLLocationManager.authorizationStatus()) {
-            kCLAuthorizationStatusAuthorizedAlways, kCLAuthorizationStatusAuthorizedWhenInUse -> LocationPermissionResult.Granted
-            kCLAuthorizationStatusRestricted, kCLAuthorizationStatusDenied -> LocationPermissionResult.NotAllowed
-            else -> LocationPermissionResult.Denied
-        }
+        return locationManager.checkLocationPermission(CLLocationManager.authorizationStatus())
     }
 
     private suspend fun requestLocationPermission(): LocationPermissionResult {

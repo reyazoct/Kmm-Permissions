@@ -1,7 +1,11 @@
 package tech.kotlinlang.permission
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -37,14 +41,21 @@ fun App() {
             }
         }
 
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .windowInsetsPadding(WindowInsets.navigationBars),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             when (locationPermissionResult) {
                 LocationPermissionResult.Denied -> {
                     Text("Location Permission is not allowed yet")
                     Button(
                         onClick = {
                             scope.launch {
-                                locationPermissionResult = permissionHelper.requestForPermission(Permission.Location)
+                                locationPermissionResult =
+                                    permissionHelper.requestForPermission(Permission.Location)
                             }
                         },
                     ) {
@@ -52,12 +63,16 @@ fun App() {
                     }
                 }
 
-                LocationPermissionResult.Granted -> {
-                    Text("Location Permission is Granted")
-                }
-
                 LocationPermissionResult.NotAllowed -> {
                     Text("Location Permission is Not Allowed")
+                }
+
+                LocationPermissionResult.Granted.Approximate -> {
+                    Text("Approximate Location Permission is Granted")
+                }
+
+                LocationPermissionResult.Granted.Precise -> {
+                    Text("Precise Location Permission is Granted")
                 }
             }
         }
