@@ -40,7 +40,7 @@ class AndroidPermissionHelper(
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             LocationPermissionResult.Granted.Approximate
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(
+        } else if (!ActivityCompat.shouldShowRequestPermissionRationale(
                 activity,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
