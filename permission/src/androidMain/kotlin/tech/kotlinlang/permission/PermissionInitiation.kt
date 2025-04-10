@@ -46,6 +46,7 @@ class PermissionInitiation private constructor() {
         fun clear() {
             permissionInitiation?.activity = null
             permissionInitiation = null
+            HelperHolder.clear()
         }
 
         internal fun getInstance(): PermissionInitiation {

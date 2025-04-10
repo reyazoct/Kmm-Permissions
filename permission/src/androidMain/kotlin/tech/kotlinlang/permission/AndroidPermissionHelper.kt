@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import tech.kotlinlang.permission.result.LocationPermissionResult
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 class AndroidPermissionHelper(
     private val permissionInitiation: PermissionInitiation

@@ -1,9 +1,13 @@
 package tech.kotlinlang.permission
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.Button
@@ -18,63 +22,108 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import tech.kotlinlang.permission.HelperHolder
+import tech.kotlinlang.permission.location.LocationRequestResult
 import tech.kotlinlang.permission.result.LocationPermissionResult
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        var locationPermissionResult by remember {
-            mutableStateOf<LocationPermissionResult>(
-                LocationPermissionResult.Denied
-            )
-        }
-
-        val scope = rememberCoroutineScope()
-        val permissionHelper = remember { getPermissionHelper() }
-        LaunchedEffect(Unit) {
-            scope.launch {
-                locationPermissionResult =
-                    permissionHelper.checkIsPermissionGranted(Permission.Location)
-            }
-        }
-
         Column(
             modifier = Modifier
+                .padding(16.dp)
                 .fillMaxWidth()
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .windowInsetsPadding(WindowInsets.navigationBars),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            when (locationPermissionResult) {
-                LocationPermissionResult.Denied -> {
-                    Text("Location Permission is not allowed yet")
-                    Button(
-                        onClick = {
-                            scope.launch {
-                                locationPermissionResult =
-                                    permissionHelper.requestForPermission(Permission.Location)
-                            }
-                        },
-                    ) {
-                        Text("Allow Permission")
+            LocationPermissionContent()
+            Spacer(Modifier.height(24.dp))
+            LocationFetchContent()
+        }
+    }
+}
+
+@Composable
+private fun LocationFetchContent() {
+    val scope = rememberCoroutineScope()
+    val locationHelper = remember { HelperHolder.getLocationHelperInstance() }
+
+    var locationRequestResult by remember {
+        mutableStateOf<LocationRequestResult?>(null)
+    }
+
+    when (locationRequestResult) {
+        is LocationRequestResult.LocationData -> {
+            val currentResult = locationRequestResult as LocationRequestResult.LocationData
+            Text("Fetched Last known location: ${currentResult.latitude}, ${currentResult.longitude}")
+        }
+        LocationRequestResult.NoLastLocationFound -> {
+            Text("No last location found for device")
+        }
+        is LocationRequestResult.PermissionFailure -> {
+            Text("Request permission first, Location permission not Granted")
+        }
+        null -> {
+            Text("Fetch Last known location")
+            Button(
+                onClick = {
+                    scope.launch {
+                        locationRequestResult = locationHelper.fetchLastKnownLocation()
                     }
-                }
-
-                LocationPermissionResult.NotAllowed -> {
-                    Text("Location Permission is Not Allowed")
-                }
-
-                LocationPermissionResult.Granted.Approximate -> {
-                    Text("Approximate Location Permission is Granted")
-                }
-
-                LocationPermissionResult.Granted.Precise -> {
-                    Text("Precise Location Permission is Granted")
-                }
+                },
+            ) {
+                Text("Fetch")
             }
+        }
+    }
+}
+
+@Composable
+private fun LocationPermissionContent() {
+    var locationPermissionResult by remember {
+        mutableStateOf<LocationPermissionResult>(
+            LocationPermissionResult.Denied
+        )
+    }
+
+    val scope = rememberCoroutineScope()
+    val permissionHelper = remember { HelperHolder.getPermissionHelperInstance() }
+    LaunchedEffect(Unit) {
+        scope.launch {
+            locationPermissionResult =
+                permissionHelper.checkIsPermissionGranted(Permission.Location)
+        }
+    }
+
+    when (locationPermissionResult) {
+        LocationPermissionResult.Denied -> {
+            Text("Location Permission is not allowed yet")
+            Button(
+                onClick = {
+                    scope.launch {
+                        locationPermissionResult = permissionHelper.requestForPermission(Permission.Location)
+                    }
+                },
+            ) {
+                Text("Allow Permission")
+            }
+        }
+
+        LocationPermissionResult.NotAllowed -> {
+            Text("Location Permission is Not Allowed")
+        }
+
+        LocationPermissionResult.Granted.Approximate -> {
+            Text("Approximate Location Permission is Granted")
+        }
+
+        LocationPermissionResult.Granted.Precise -> {
+            Text("Precise Location Permission is Granted")
         }
     }
 }
