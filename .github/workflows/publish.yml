@@ -3,14 +3,14 @@ name: Publish KMM Library
 on:
   push:
     tags:
-      - 'v*'  # Triggers on tags like v1.2.3
+      - 'v*'  # Trigger only when a version tag like v1.0.0 is pushed
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Java
@@ -23,22 +23,15 @@ jobs:
       - name: Extract version from tag
         id: version
         run: |
-          TAG_NAME=${GITHUB_REF_NAME}
-          VERSION=${TAG_NAME#v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Set up GPG
-        run: |
-          echo "$SIGNING_KEY" | base64 --decode > signingkey.asc
-          gpg --batch --import signingkey.asc
-        env:
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Publish to Maven Central
-        run: ./gradlew publishToMavenCentral -PlibraryVersion=${{ steps.version.outputs.version }}
+        run: ./gradlew publish -PlibraryVersion=${{ steps.version.outputs.version }}
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.SIGNING_KEY_ID }}
           ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
           ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
 
@@ -47,7 +40,5 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
-          body: |
-            ✅ Kotlin Multiplatform library released!
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
