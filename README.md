@@ -32,10 +32,14 @@ Kmm-Permissions is a Kotlin Multiplatform library designed to simplify permissio
 4. Use `getPermissionHelper` extension function from `commonMain` which helps to create new instance for permission helper class.
 
     ```kotlin
-    val permissionHelper = getPermissionHelper()
+    // Permission Helper to request permission
+    val permissionHelper = HelperHolder.getPermissionHelperInstance()
+
+    // Location Helper to request permission to fetch location
+    val locationHelper = HelperHolder.getLocationHelperInstance()
     ```
 
-5. Use `permissionHelper` instance to check permission state or request permission. Both functions are suspended, use `Dispatcher.Main` for access permissions.
+5. Use `permissionHelper` instance to check permission state or request permission. Both functions are suspended, use `Dispatcher.Main` for access permissions. Also you can use `locationHelper` to fetch location updates.
 
     ```kotlin
     // Check Permission
@@ -43,21 +47,22 @@ Kmm-Permissions is a Kotlin Multiplatform library designed to simplify permissio
 
     // Request Permssion
     val requestPermissionResult = permissionHelper.requestForPermission(Permission.Location)
-    
-    // result provide different states according to permission
+
+    // Fetch Last known location
+    val locationRequestResult = locationHelper.fetchLastKnownLocation()
     ```
 
 
-## Useful functions
+## Useful Permission Results
 
 #### List of Permission Result States
 
-| S. No. | Permssion Type | State                               | Description                                                                                                                             |
-|--------|----------------|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| 1      | Location       | LocationPermissionResult.Denied     | Location Permission is Denied by user. But developer can request again for permission.                                                  |
-| 2      | Location       | LocationPermissionResult.NotAllowed | Location Permission is Denied by user. Developer cannot request again for permission. Developer have to navigate user to settings page. |
-| 3      | Location       | LocationPermissionResult.Granted.Precise   | Precise Location Permission is Granted by user  |
-| 4      | Location       | LocationPermissionResult.Granted.Approximate   | Approximate Location Permission is Granted by user  |
+| S. No. | Permssion Type | State                                        | Description                                                                                                                             |
+|--------|----------------|----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| 1      | Location       | LocationPermissionResult.Denied              | Location Permission is Denied by user. But developer can request again for permission.                                                  |
+| 2      | Location       | LocationPermissionResult.NotAllowed          | Location Permission is Denied by user. Developer cannot request again for permission. Developer have to navigate user to settings page. |
+| 3      | Location       | LocationPermissionResult.Granted.Precise     | Precise Location Permission is Granted by user                                                                                          |
+| 4      | Location       | LocationPermissionResult.Granted.Approximate | Approximate Location Permission is Granted by user                                                                                      |
 
 
 ## About Developer
