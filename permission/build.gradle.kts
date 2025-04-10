@@ -4,7 +4,6 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library") // ✅ This enables the Android block
     id("com.vanniktech.maven.publish") version "0.31.0"
-    signing
 }
 
 kotlin {
@@ -129,12 +128,4 @@ mavenPublishing {
 
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
-}
-
-signing {
-    useInMemoryPgpKeys(
-        findProperty("signingKeyId")?.toString(),
-        findProperty("signingKey")?.toString(),
-        findProperty("signingPassword")?.toString()
-    )
 }
