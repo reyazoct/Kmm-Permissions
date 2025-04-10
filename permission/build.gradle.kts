@@ -49,13 +49,13 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.kotlin.stdlib)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.gms.play.services.location)
             // Add KMP dependencies here
         }
 
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.gms.play.services.location)
         }
 
         iosMain.dependencies {
