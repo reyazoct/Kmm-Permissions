@@ -43,9 +43,9 @@ Kmm-Permissions is a Kotlin Multiplatform library designed to simplify permissio
 
     ```kotlin
     // Check Permission
-    val checkPermssionResult = permissionHelper.checkIsPermissionGranted(Permission.Location)
+    val checkPermissionResult = permissionHelper.checkIsPermissionGranted(Permission.Location)
 
-    // Request Permssion
+    // Request Permission
     val requestPermissionResult = permissionHelper.requestForPermission(Permission.Location)
 
     // Fetch Last known location
@@ -57,12 +57,15 @@ Kmm-Permissions is a Kotlin Multiplatform library designed to simplify permissio
 
 #### List of Permission Result States
 
-| S. No. | Permssion Type | State                                        | Description                                                                                                                             |
-|--------|----------------|----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| 1      | Location       | LocationPermissionResult.Denied              | Location Permission is Denied by user. But developer can request again for permission.                                                  |
-| 2      | Location       | LocationPermissionResult.NotAllowed          | Location Permission is Denied by user. Developer cannot request again for permission. Developer have to navigate user to settings page. |
-| 3      | Location       | LocationPermissionResult.Granted.Precise     | Precise Location Permission is Granted by user                                                                                          |
-| 4      | Location       | LocationPermissionResult.Granted.Approximate | Approximate Location Permission is Granted by user                                                                                      |
+| S. No. | Request Type        | State                                        | Description                                                                                                                             |
+|--------|---------------------|----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| 1      | Location Permission | LocationPermissionResult.Denied              | Location Permission is Denied by user. But developer can request again for permission.                                                  |
+| 2      | Location Permission | LocationPermissionResult.NotAllowed          | Location Permission is Denied by user. Developer cannot request again for permission. Developer have to navigate user to settings page. |
+| 3      | Location Permission | LocationPermissionResult.Granted.Precise     | Precise Location Permission is Granted by user                                                                                          |
+| 4      | Location Permission | LocationPermissionResult.Granted.Approximate | Approximate Location Permission is Granted by user                                                                                      |
+| 5      | Last Known Location | LocationRequestResult.LocationData           | Provides you latitude and longitude for you current location                                                                            |
+| 6      | Last Known Location | LocationRequestResult.PermissionFailure      | This returns when location permission is not granted location                                                                           |
+| 7      | NoLastLocationFound | LocationRequestResult.NoLastLocationFound    | This returns when device is not fetched location from very long time or any failure occor.                                              |
 
 
 ## About Developer
