@@ -2,13 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.0.8] - 2025-04-15
 
 ### Added
 - Add command to pull change log from CHANGELOG.md
-
-### Changes
-- Run publish build when tag provided in format [0-9]*.[0-9]*.[0-9]*
 
 ---
 
