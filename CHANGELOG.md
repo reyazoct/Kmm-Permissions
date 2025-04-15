@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 ### Changed
+- Change location request from PRIORITY_HIGH_ACCURACY to PRIORITY_BALANCED_POWER_ACCURACY for Android
 
 ---
 

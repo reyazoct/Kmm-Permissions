@@ -28,13 +28,13 @@ class AndroidLocationHelper(
             }
             val activity = permissionInitiation.getActivity()
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
-            val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build()
+            val locationRequest = LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY, 1000).build()
             suspendCancellableCoroutine<LocationRequestResult> { continuation ->
                 val locationCallBack = object : LocationCallback() {
                     override fun onLocationResult(locationRequestResult: LocationResult) {
                         val location = locationRequestResult.lastLocation ?: run {
                             continuation.resume(LocationRequestResult.NoLastLocationFound)
-                            return
+                            return@onLocationResult
                         }
                         val locationRequestResult = LocationRequestResult.LocationData(
                             latitude = location.latitude,
