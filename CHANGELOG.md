@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Added
+---
 
-### Fixed
+## [0.0.7] - 2025-04-15
 
 ### Changed
 - Change location request from PRIORITY_HIGH_ACCURACY to PRIORITY_BALANCED_POWER_ACCURACY for Android
