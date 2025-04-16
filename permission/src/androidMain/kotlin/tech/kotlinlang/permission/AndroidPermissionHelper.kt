@@ -2,11 +2,11 @@ package tech.kotlinlang.permission
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import tech.kotlinlang.permission.result.LocationPermissionResult
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
+import tech.kotlinlang.permission.result.NotificationPermissionResult
 
 class AndroidPermissionHelper(
     private val permissionInitiation: PermissionInitiation
@@ -16,6 +16,7 @@ class AndroidPermissionHelper(
         @Suppress("UNCHECKED_CAST")
         return when (permission) {
             Permission.Location -> checkLocationPermission()
+            Permission.Notification -> checkNotificationPermission()
         } as T
     }
 
@@ -23,7 +24,37 @@ class AndroidPermissionHelper(
         @Suppress("UNCHECKED_CAST")
         return when (permission) {
             Permission.Location -> requestLocationPermission()
+            Permission.Notification -> requestNotificationPermission()
         } as T
+    }
+
+    private fun checkNotificationPermission(): NotificationPermissionResult {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return NotificationPermissionResult.Granted
+        }
+        val activity = permissionInitiation.getActivity()
+        return if (ContextCompat.checkSelfPermission(
+                activity, Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            NotificationPermissionResult.Granted
+        } else if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                activity,
+                Manifest.permission.POST_NOTIFICATIONS,
+            )
+        ) {
+            NotificationPermissionResult.NotAllowed
+        } else {
+            NotificationPermissionResult.Denied
+        }
+    }
+
+    private suspend fun requestNotificationPermission(): NotificationPermissionResult {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return NotificationPermissionResult.Granted
+        }
+        permissionInitiation.requestPermission(Manifest.permission.POST_NOTIFICATIONS)
+        return checkNotificationPermission()
     }
 
     private fun checkLocationPermission(): LocationPermissionResult {

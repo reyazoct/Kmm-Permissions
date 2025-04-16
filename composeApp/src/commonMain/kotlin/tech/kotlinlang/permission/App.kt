@@ -1,7 +1,6 @@
 package tech.kotlinlang.permission
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,9 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import tech.kotlinlang.permission.HelperHolder
 import tech.kotlinlang.permission.location.LocationRequestResult
 import tech.kotlinlang.permission.result.LocationPermissionResult
+import tech.kotlinlang.permission.result.NotificationPermissionResult
 
 @Composable
 @Preview
@@ -44,8 +43,51 @@ fun App() {
             LocationPermissionContent()
             Spacer(Modifier.height(24.dp))
             LocationFetchContent()
+            Spacer(Modifier.height(24.dp))
+            NotificationPermissionContent()
         }
     }
+}
+
+@Composable
+private fun NotificationPermissionContent() {
+    var notificationPermissionResult by remember {
+        mutableStateOf<NotificationPermissionResult>(
+            NotificationPermissionResult.Denied
+        )
+    }
+
+    val scope = rememberCoroutineScope()
+    val permissionHelper = remember { HelperHolder.getPermissionHelperInstance() }
+    LaunchedEffect(Unit) {
+        scope.launch {
+            notificationPermissionResult = permissionHelper.checkIsPermissionGranted(Permission.Notification)
+        }
+    }
+
+    when (notificationPermissionResult) {
+        NotificationPermissionResult.Denied -> {
+            Text("Notification Permission is not allowed yet")
+            Button(
+                onClick = {
+                    scope.launch {
+                        notificationPermissionResult = permissionHelper.requestForPermission(Permission.Notification)
+                    }
+                },
+            ) {
+                Text("Allow Permission")
+            }
+        }
+
+        NotificationPermissionResult.NotAllowed -> {
+            Text("Notification Permission is Not Allowed")
+        }
+
+        NotificationPermissionResult.Granted -> {
+            Text("Notification Permission is Granted")
+        }
+    }
+
 }
 
 @Composable

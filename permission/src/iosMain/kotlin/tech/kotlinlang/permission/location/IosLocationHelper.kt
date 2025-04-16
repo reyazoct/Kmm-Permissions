@@ -3,7 +3,6 @@ package tech.kotlinlang.permission.location
 import tech.kotlinlang.permission.IosLocationManager
 import tech.kotlinlang.permission.Permission
 import tech.kotlinlang.permission.PermissionHelper
-import tech.kotlinlang.permission.result.LocationPermissionResult
 
 class IosLocationHelper(
     private val permissionHelper: PermissionHelper,
@@ -12,7 +11,7 @@ class IosLocationHelper(
 
     override suspend fun fetchLastKnownLocation(): LocationRequestResult {
         val permissionResult = permissionHelper.checkIsPermissionGranted(Permission.Location)
-        if (permissionResult !is LocationPermissionResult.Granted) {
+        if (permissionResult !is PermissionResult.Granted) {
             return LocationRequestResult.PermissionFailure(permissionResult)
         }
         return locationManager.fetchLocation()

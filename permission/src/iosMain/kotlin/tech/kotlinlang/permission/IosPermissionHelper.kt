@@ -1,7 +1,6 @@
 package tech.kotlinlang.permission
 
 import platform.CoreLocation.CLLocationManager
-import tech.kotlinlang.permission.result.LocationPermissionResult
 
 class IosPermissionHelper : PermissionHelper {
 
@@ -21,11 +20,11 @@ class IosPermissionHelper : PermissionHelper {
         } as T
     }
 
-    private fun checkLocationPermission(): LocationPermissionResult {
+    private fun checkLocationPermission(): LocationGrantedType {
         return locationManager.checkLocationPermission(CLLocationManager.authorizationStatus())
     }
 
-    private suspend fun requestLocationPermission(): LocationPermissionResult {
+    private suspend fun requestLocationPermission(): LocationGrantedType {
         return locationManager.askForLocationPermission()
     }
 }

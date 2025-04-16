@@ -15,14 +15,13 @@ import platform.CoreLocation.kCLLocationAccuracyBest
 import platform.Foundation.NSError
 import platform.darwin.NSObject
 import tech.kotlinlang.permission.location.LocationRequestResult
-import tech.kotlinlang.permission.result.LocationPermissionResult
 import kotlin.coroutines.resume
 
 class IosLocationManager : NSObject(), CLLocationManagerDelegateProtocol {
 
     private val locationManager by lazy { CLLocationManager() }
 
-    private var locationPermissionContinuation: (CancellableContinuation<LocationPermissionResult>)? = null
+    private var locationPermissionContinuation: (CancellableContinuation<LocationGrantedType>)? = null
     private var locationContinuation: (CancellableContinuation<LocationRequestResult>)? = null
 
     init {
@@ -30,7 +29,7 @@ class IosLocationManager : NSObject(), CLLocationManagerDelegateProtocol {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
 
-    suspend fun askForLocationPermission(): LocationPermissionResult {
+    suspend fun askForLocationPermission(): LocationGrantedType {
         return suspendCancellableCoroutine { continuation ->
             locationPermissionContinuation = continuation
             locationManager.requestWhenInUseAuthorization()
@@ -67,21 +66,21 @@ class IosLocationManager : NSObject(), CLLocationManagerDelegateProtocol {
         locationPermissionContinuation = null
     }
 
-    fun checkLocationPermission(status: CLAuthorizationStatus): LocationPermissionResult {
+    fun checkLocationPermission(status: CLAuthorizationStatus): LocationGrantedType {
         return when (status) {
             kCLAuthorizationStatusAuthorizedAlways, kCLAuthorizationStatusAuthorizedWhenInUse -> {
-                if (locationManager.accuracyAuthorization.value == 1L) LocationPermissionResult.Granted.Approximate
-                else LocationPermissionResult.Granted.Precise
+                if (locationManager.accuracyAuthorization.value == 1L) LocationGrantedType.GrantedType.Approximate
+                else LocationGrantedType.GrantedType.Precise
             }
 
-            kCLAuthorizationStatusRestricted, kCLAuthorizationStatusDenied -> LocationPermissionResult.NotAllowed
-            else -> LocationPermissionResult.Denied
+            kCLAuthorizationStatusRestricted, kCLAuthorizationStatusDenied -> LocationGrantedType.NotAllowed
+            else -> LocationGrantedType.Denied
         }
     }
 
     override fun locationManager(manager: CLLocationManager, didFailWithError: NSError) {
         if (locationPermissionContinuation?.isActive == true) {
-            locationPermissionContinuation?.resume(LocationPermissionResult.Denied)
+            locationPermissionContinuation?.resume(LocationGrantedType.Denied)
             locationPermissionContinuation = null
         }
 

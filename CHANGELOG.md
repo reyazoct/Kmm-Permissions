@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add logic to show request and check notification permission in android
+
 ## [0.0.8] - 2025-04-15
 
 ### Added
