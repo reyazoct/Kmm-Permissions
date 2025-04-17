@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Add logic to show request and check notification permission in android
+- Add logic to show request and check notification permission in iOS
 
 ## [0.0.8] - 2025-04-15
 
