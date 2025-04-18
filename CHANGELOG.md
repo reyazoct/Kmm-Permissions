@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.1.1] - 2025-04-18
 
 ### Fix
 - Fix Not Allowed issue while checking permission for first time in Android
