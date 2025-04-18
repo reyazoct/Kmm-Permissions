@@ -48,5 +48,7 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to determine your location</string>
+	<key>NSCameraUsageDescription</key>
+    <string>This app needs camera access to take photos.</string>
 </dict>
 </plist>

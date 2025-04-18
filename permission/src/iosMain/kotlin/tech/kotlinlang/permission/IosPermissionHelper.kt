@@ -1,20 +1,22 @@
 package tech.kotlinlang.permission
 
 import kotlinx.coroutines.suspendCancellableCoroutine
+import platform.AVFoundation.AVAuthorizationStatusAuthorized
+import platform.AVFoundation.AVAuthorizationStatusDenied
+import platform.AVFoundation.AVCaptureDevice
 import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
-import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
-import platform.CoreLocation.kCLAuthorizationStatusDenied
-import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNAuthorizationStatusAuthorized
 import platform.UserNotifications.UNAuthorizationStatusDenied
-import platform.UserNotifications.UNAuthorizationStatusNotDetermined
 import tech.kotlinlang.permission.result.LocationPermissionResult
 import platform.UserNotifications.UNUserNotificationCenter
+import tech.kotlinlang.permission.result.CameraPermissionResult
 import tech.kotlinlang.permission.result.NotificationPermissionResult
+import platform.AVFoundation.AVMediaTypeVideo
+import platform.AVFoundation.authorizationStatusForMediaType
+import platform.AVFoundation.requestAccessForMediaType
 import kotlin.coroutines.resume
 
 class IosPermissionHelper : PermissionHelper {
@@ -26,6 +28,7 @@ class IosPermissionHelper : PermissionHelper {
         return when (permission) {
             Permission.Location -> checkLocationPermission()
             Permission.Notification -> checkNotificationPermission()
+            Permission.Camera -> checkCameraPermission()
         } as T
     }
 
@@ -34,7 +37,32 @@ class IosPermissionHelper : PermissionHelper {
         return when (permission) {
             Permission.Location -> requestLocationPermission()
             Permission.Notification -> requestNotificationPermission()
+            Permission.Camera -> requestCameraPermission()
         } as T
+    }
+
+    private suspend fun checkCameraPermission(): CameraPermissionResult {
+        return suspendCancellableCoroutine { continuation ->
+            checkCameraPermission { continuation.resume(it) }
+        }
+    }
+
+    private fun checkCameraPermission(callback: (CameraPermissionResult) -> Unit) {
+        val status = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        val result = when (status) {
+            AVAuthorizationStatusAuthorized -> CameraPermissionResult.Granted
+            AVAuthorizationStatusDenied -> CameraPermissionResult.NotAllowed
+            else -> CameraPermissionResult.Denied
+        }
+        callback(result)
+    }
+
+    private suspend fun requestCameraPermission(): CameraPermissionResult {
+        return suspendCancellableCoroutine { continuation ->
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo) { granted ->
+                checkCameraPermission { continuation.resume(it) }
+            }
+        }
     }
 
     private fun checkLocationPermission(): LocationPermissionResult {

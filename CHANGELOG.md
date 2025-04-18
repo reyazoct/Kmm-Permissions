@@ -5,7 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
-- Add logic to show request and check camera permission in android.
+- Add logic to show request and check camera permission in Android
+- Add logic to show request and check camera permission in iOS
 
 ## [0.1.1] - 2025-04-18
 
