@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import tech.kotlinlang.permission.result.CameraPermissionResult
 import tech.kotlinlang.permission.result.LocationPermissionResult
 import tech.kotlinlang.permission.result.NotificationPermissionResult
 import androidx.core.content.edit
@@ -24,6 +25,7 @@ class AndroidPermissionHelper(
         return when (permission) {
             Permission.Location -> checkLocationPermission()
             Permission.Notification -> checkNotificationPermission()
+            Permission.Camera -> checkCameraPermission()
         } as T
     }
 
@@ -32,7 +34,33 @@ class AndroidPermissionHelper(
         return when (permission) {
             Permission.Location -> requestLocationPermission()
             Permission.Notification -> requestNotificationPermission()
+            Permission.Camera -> requestCameraPermission()
         } as T
+    }
+
+    private fun checkCameraPermission(): CameraPermissionResult {
+        val activity = permissionInitiation.getActivity()
+        val isUsed = sharedPref.getBoolean("camera.permission", false)
+        return if (ContextCompat.checkSelfPermission(
+                activity, Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            CameraPermissionResult.Granted
+        } else if (isUsed && !ActivityCompat.shouldShowRequestPermissionRationale(
+                activity,
+                Manifest.permission.CAMERA,
+            )
+        ) {
+            CameraPermissionResult.NotAllowed
+        } else {
+            CameraPermissionResult.Denied
+        }
+    }
+
+    private suspend fun requestCameraPermission(): CameraPermissionResult {
+        val result = permissionInitiation.requestPermission(Manifest.permission.CAMERA)
+        if (!result) { sharedPref.edit { putBoolean("camera.permission", true) } }
+        return checkCameraPermission()
     }
 
     private fun checkNotificationPermission(): NotificationPermissionResult {
@@ -61,8 +89,8 @@ class AndroidPermissionHelper(
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return NotificationPermissionResult.Granted
         }
-        permissionInitiation.requestPermission(Manifest.permission.POST_NOTIFICATIONS)
-        sharedPref.edit { putBoolean("notification.permission", true) }
+        val result = permissionInitiation.requestPermission(Manifest.permission.POST_NOTIFICATIONS)
+        if (!result) { sharedPref.edit { putBoolean("notification.permission", true) } }
         return checkNotificationPermission()
     }
 
@@ -93,8 +121,8 @@ class AndroidPermissionHelper(
     }
 
     private suspend fun requestLocationPermission(): LocationPermissionResult {
-        permissionInitiation.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-        sharedPref.edit { putBoolean("location.permission", true) }
+        val result = permissionInitiation.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        if (!result) { sharedPref.edit { putBoolean("location.permission", true) } }
         return checkLocationPermission()
     }
 }

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add logic to show request and check camera permission in android.
+
 ## [0.1.1] - 2025-04-18
 
 ### Fix
