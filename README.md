@@ -18,15 +18,27 @@ Kmm-Permissions is a Kotlin Multiplatform library designed to simplify permissio
 
 2. Add below permission in `AndroidManifest.xml` for Android.
     ```xml
+    <!--    For location permission-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+   
+    <!--    For notification permission-->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+   
+    <!--    For camera permission-->
+    <uses-permission android:name="android.permission.CAMERA" />
     ```
 
 3. Add below message in `info.plist` for iOS.
 
-    ```
+    ```xml
+    <!--    For location permission-->
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to determine your location</string>
+
+    <!--    For camera permission-->
+    <key>NSCameraUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your camera</string>
     ```
 
 4. Use `getPermissionHelper` extension function from `commonMain` which helps to create new instance for permission helper class.
@@ -42,11 +54,13 @@ Kmm-Permissions is a Kotlin Multiplatform library designed to simplify permissio
 5. Use `permissionHelper` instance to check permission state or request permission. Both functions are suspended, use `Dispatcher.Main` for access permissions. Also you can use `locationHelper` to fetch location updates.
 
     ```kotlin
-    // Check Permission
-    val checkPermissionResult = permissionHelper.checkIsPermissionGranted(Permission.Location)
+    // Use permission object, Permission.Location, Permission.Notification, Permission.Camera
+    val permission = Permission.Location
+   
+    val checkPermissionResult = permissionHelper.checkIsPermissionGranted(permission)
 
     // Request Permission
-    val requestPermissionResult = permissionHelper.requestForPermission(Permission.Location)
+    val requestPermissionResult = permissionHelper.requestForPermission(permission)
 
     // Fetch Last known location
     val locationRequestResult = locationHelper.fetchLastKnownLocation()
@@ -55,17 +69,35 @@ Kmm-Permissions is a Kotlin Multiplatform library designed to simplify permissio
 
 ## Useful Permission Results
 
-#### List of Permission Result States
+#### List of Location Permission Result States
 
-| S. No. | Request Type        | State                                        | Description                                                                                                                             |
-|--------|---------------------|----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| 1      | Location Permission | LocationPermissionResult.Denied              | Location Permission is Denied by user. But developer can request again for permission.                                                  |
-| 2      | Location Permission | LocationPermissionResult.NotAllowed          | Location Permission is Denied by user. Developer cannot request again for permission. Developer have to navigate user to settings page. |
-| 3      | Location Permission | LocationPermissionResult.Granted.Precise     | Precise Location Permission is Granted by user                                                                                          |
-| 4      | Location Permission | LocationPermissionResult.Granted.Approximate | Approximate Location Permission is Granted by user                                                                                      |
-| 5      | Last Known Location | LocationRequestResult.LocationData           | Provides you latitude and longitude for you current location                                                                            |
-| 6      | Last Known Location | LocationRequestResult.PermissionFailure      | This returns when location permission is not granted location                                                                           |
-| 7      | NoLastLocationFound | LocationRequestResult.NoLastLocationFound    | This returns when device is not fetched location from very long time or any failure occor.                                              |
+| S. No. | Location Permission Result                   | Description                                                                                                                             |
+|--------|----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| 1      | LocationPermissionResult.Denied              | Location Permission is Denied by user. But developer can request again for permission.                                                  |
+| 2      | LocationPermissionResult.NotAllowed          | Location Permission is Denied by user. Developer cannot request again for permission. Developer have to navigate user to settings page. |
+| 3      | LocationPermissionResult.Granted.Precise     | Precise Location Permission is Granted by user                                                                                          |
+| 4      | LocationPermissionResult.Granted.Approximate | Approximate Location Permission is Granted by user                                                                                      |
+
+#### List of Notification Permission Result States
+| S. No. | Notification Permission Result          | Description                                                                                                                                 |
+|--------|-----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| 1      | NotificationPermissionResult.Denied     | Notification Permission is Denied by user. But developer can request again for permission.                                                  |
+| 2      | NotificationPermissionResult.NotAllowed | Notification Permission is Denied by user. Developer cannot request again for permission. Developer have to navigate user to settings page. |
+| 3      | NotificationPermissionResult.Granted    | Notification Permission is Granted by user. Now notification can be send to device.                                                         |
+
+#### List of Camera Permission Result States
+| S. No. | Camera Permission Result          | Description                                                                                                                           |
+|--------|-----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| 1      | CameraPermissionResult.Denied     | Camera Permission is Denied by user. But developer can request again for permission.                                                  |
+| 2      | CameraPermissionResult.NotAllowed | Camera Permission is Denied by user. Developer cannot request again for permission. Developer have to navigate user to settings page. |
+| 3      | CameraPermissionResult.Granted    | Camera Permission is Granted by user. Now Developer can access camera.                                                                |
+
+#### List of Location Request Result States
+| S. No. | Location Request Result                 | Description                                                                               |
+|--------|-----------------------------------------|-------------------------------------------------------------------------------------------|
+| 1      | LocationRequestResult.LocationData      | Provides you latitude and longitude for you current location                              |
+| 2      | LocationRequestResult.PermissionFailure | This returns when location permission is not granted location                             |
+| 3      | CameraPermissionResult.Granted          | This returns when device is not fetched location from very long time or any failure occur |
 
 
 ## About Developer
