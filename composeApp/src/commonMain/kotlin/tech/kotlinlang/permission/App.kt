@@ -39,11 +39,9 @@ import tech.kotlinlang.permission.result.NotificationPermissionResult
 @Preview
 fun App() {
     MaterialTheme {
-        Column(
+        LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .windowInsetsPadding(WindowInsets.navigationBars),
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val commonModifier = Modifier
@@ -57,10 +55,31 @@ fun App() {
                     shape = RoundedCornerShape(16.dp)
                 )
                 .padding(12.dp)
-            LocationPermissionContent(commonModifier)
-            LocationFetchContent(commonModifier)
-            NotificationPermissionContent(commonModifier)
-            CameraPermissionContent(commonModifier)
+            item {
+                Spacer(
+                    Modifier.height(12.dp)
+                        .windowInsetsPadding(WindowInsets.statusBars)
+                )
+            }
+
+            item {
+                LocationPermissionContent(commonModifier)
+            }
+            item {
+                LocationFetchContent(commonModifier)
+            }
+            item {
+                NotificationPermissionContent(commonModifier)
+            }
+            item {
+                CameraPermissionContent(commonModifier)
+            }
+            item {
+                Spacer(
+                    Modifier.height(12.dp)
+                        .windowInsetsPadding(WindowInsets.navigationBars)
+                )
+            }
         }
     }
 }
