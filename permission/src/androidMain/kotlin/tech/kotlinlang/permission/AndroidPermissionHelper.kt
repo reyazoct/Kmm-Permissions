@@ -2,8 +2,11 @@ package tech.kotlinlang.permission
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import tech.kotlinlang.permission.result.CameraPermissionResult
@@ -38,6 +41,14 @@ class AndroidPermissionHelper(
         } as T
     }
 
+    override fun openSettings() {
+        val activity = permissionInitiation.getActivity()
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", activity.packageName, null)
+        }
+        activity.startActivity(intent)
+    }
+
     private fun checkCameraPermission(): CameraPermissionResult {
         val activity = permissionInitiation.getActivity()
         val isUsed = sharedPref.getBoolean("camera.permission", false)
@@ -59,7 +70,9 @@ class AndroidPermissionHelper(
 
     private suspend fun requestCameraPermission(): CameraPermissionResult {
         val result = permissionInitiation.requestPermission(Manifest.permission.CAMERA)
-        if (!result) { sharedPref.edit { putBoolean("camera.permission", true) } }
+        if (!result) {
+            sharedPref.edit { putBoolean("camera.permission", true) }
+        }
         return checkCameraPermission()
     }
 
@@ -90,7 +103,9 @@ class AndroidPermissionHelper(
             return NotificationPermissionResult.Granted
         }
         val result = permissionInitiation.requestPermission(Manifest.permission.POST_NOTIFICATIONS)
-        if (!result) { sharedPref.edit { putBoolean("notification.permission", true) } }
+        if (!result) {
+            sharedPref.edit { putBoolean("notification.permission", true) }
+        }
         return checkNotificationPermission()
     }
 
@@ -122,7 +137,9 @@ class AndroidPermissionHelper(
 
     private suspend fun requestLocationPermission(): LocationPermissionResult {
         val result = permissionInitiation.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-        if (!result) { sharedPref.edit { putBoolean("location.permission", true) } }
+        if (!result) {
+            sharedPref.edit { putBoolean("location.permission", true) }
+        }
         return checkLocationPermission()
     }
 }

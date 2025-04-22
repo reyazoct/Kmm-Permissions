@@ -98,6 +98,11 @@ private fun CameraPermissionContent(
 
             CameraPermissionResult.NotAllowed -> {
                 Text("Camera Permission is Not Allowed")
+                Button(
+                    onClick = { permissionHelper.openSettings() },
+                ) {
+                    Text("Go to Settings")
+                }
             }
 
             CameraPermissionResult.Granted -> {

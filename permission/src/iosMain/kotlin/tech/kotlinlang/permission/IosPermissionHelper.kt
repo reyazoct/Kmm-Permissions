@@ -4,20 +4,24 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.AVFoundation.AVAuthorizationStatusAuthorized
 import platform.AVFoundation.AVAuthorizationStatusDenied
 import platform.AVFoundation.AVCaptureDevice
+import platform.AVFoundation.AVMediaTypeVideo
+import platform.AVFoundation.authorizationStatusForMediaType
+import platform.AVFoundation.requestAccessForMediaType
 import platform.CoreLocation.CLLocationManager
+import platform.Foundation.NSURL
+import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationOpenSettingsURLString
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNAuthorizationStatusAuthorized
 import platform.UserNotifications.UNAuthorizationStatusDenied
-import tech.kotlinlang.permission.result.LocationPermissionResult
 import platform.UserNotifications.UNUserNotificationCenter
 import tech.kotlinlang.permission.result.CameraPermissionResult
+import tech.kotlinlang.permission.result.LocationPermissionResult
 import tech.kotlinlang.permission.result.NotificationPermissionResult
-import platform.AVFoundation.AVMediaTypeVideo
-import platform.AVFoundation.authorizationStatusForMediaType
-import platform.AVFoundation.requestAccessForMediaType
 import kotlin.coroutines.resume
+
 
 class IosPermissionHelper : PermissionHelper {
 
@@ -39,6 +43,17 @@ class IosPermissionHelper : PermissionHelper {
             Permission.Notification -> requestNotificationPermission()
             Permission.Camera -> requestCameraPermission()
         } as T
+    }
+
+    override fun openSettings() {
+        val url = NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+        if (url != null && UIApplication.sharedApplication.canOpenURL(url)) {
+            UIApplication.sharedApplication.openURL(
+                url = url,
+                options = emptyMap<Any?, Any>(),
+                completionHandler = null
+            )
+        }
     }
 
     private suspend fun checkCameraPermission(): CameraPermissionResult {

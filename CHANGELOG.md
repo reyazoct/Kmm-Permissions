@@ -2,10 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add open settings helper method which can be used when user denies permission.
+
 ## [0.2.0] - 2025-04-18
 
 ### Added
-- Add logic to show request and check camera permission in Android
 - Add logic to show request and check camera permission in iOS
 
 ## [0.1.1] - 2025-04-18
