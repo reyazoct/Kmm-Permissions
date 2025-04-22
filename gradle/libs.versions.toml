@@ -16,6 +16,7 @@ junit = "4.13.2"
 kotlin = "2.1.10"
 coroutines = "1.10.1"
 gms-play-services-location = "21.3.0"
+camera-view = "1.4.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -33,6 +34,9 @@ androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 gms-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "gms-play-services-location" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camera-view" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camera-view" }
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camera-view" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

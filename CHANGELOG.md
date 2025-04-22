@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add Camera preview library which shows camera preview in Android.
+
 ## [0.3.0] - 2025-04-22
 
 ### Added
