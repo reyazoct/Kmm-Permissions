@@ -11,7 +11,7 @@ import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
 import tech.kotlinlang.camera.analyser.IosImageAnalyser
 
-actual class QrCodeImageAnalyser : IosImageAnalyser<String> {
+class QrCodeImageAnalyser : IosImageAnalyser<String> {
     private var scanningCallback: ((String) -> Unit)? = null
 
     override fun provideAVCaptureOutput(): AVCaptureOutput? {

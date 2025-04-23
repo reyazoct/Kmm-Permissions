@@ -2,7 +2,7 @@ package tech.kotlinlang.camera.analyser
 
 import platform.AVFoundation.AVCaptureOutput
 
-actual class EmptyImageAnalyser : IosImageAnalyser<Unit> {
+class EmptyImageAnalyser : IosImageAnalyser<Unit> {
     override fun provideAVCaptureOutput(): AVCaptureOutput? {
         return null
     }

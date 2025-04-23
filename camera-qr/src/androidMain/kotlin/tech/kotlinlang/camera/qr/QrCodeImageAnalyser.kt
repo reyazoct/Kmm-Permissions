@@ -8,7 +8,7 @@ import com.google.mlkit.vision.common.InputImage
 import tech.kotlinlang.camera.analyser.AndroidImageAnalyser
 import kotlin.getValue
 
-actual class QrCodeImageAnalyser : AndroidImageAnalyser<String> {
+class QrCodeImageAnalyser : AndroidImageAnalyser<String> {
     private val barcodeScanner by lazy { BarcodeScanning.getClient() }
     private var scanningCallback: ((String) -> Unit)? = null
     private var stopCallback: (() -> Unit)? = null

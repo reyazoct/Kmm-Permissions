@@ -4,8 +4,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     id("com.vanniktech.maven.publish") version "0.31.0"
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
@@ -104,7 +102,7 @@ mavenPublishing {
     coordinates(
         "tech.kotlinlang",
         "camera.qr",
-        "0.4.0"
+        "0.5.0"
     )
 
     pom {
