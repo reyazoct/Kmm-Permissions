@@ -45,6 +45,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(project(":permission"))
             implementation(project(":camera"))
+            implementation(project(":camera-qr"))
         }
     }
 }

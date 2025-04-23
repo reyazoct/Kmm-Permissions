@@ -17,11 +17,17 @@ import platform.UIKit.UIScreen
 import platform.UIKit.UIView
 import platform.UIKit.UIViewAutoresizingFlexibleHeight
 import platform.UIKit.UIViewAutoresizingFlexibleWidth
+import tech.kotlinlang.camera.analyser.ImageAnalyser
+import tech.kotlinlang.camera.analyser.IosImageAnalyser
+import platform.AVFoundation.AVCaptureOutput
 
 class IosCameraHelper : CameraHelper {
     @Composable
     @OptIn(ExperimentalForeignApi::class)
-    override fun CameraContent(modifier: Modifier) {
+    override fun <T> CameraContent(
+        modifier: Modifier,
+        imageAnalyser: ImageAnalyser<T>,
+    ) {
         val previewView = remember {
             UIView(frame = UIScreen.mainScreen.bounds).apply {
                 clipsToBounds = true
@@ -34,7 +40,16 @@ class IosCameraHelper : CameraHelper {
             val captureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
 
             val input = AVCaptureDeviceInput.deviceInputWithDevice(captureDevice!!, null)
-            captureSession.addInput(input!!)
+            if (input != null && captureSession.canAddInput(input)) {
+                captureSession.addInput(input)
+            }
+
+            val iosImageAnalyser = imageAnalyser as IosImageAnalyser<T>
+            val output = iosImageAnalyser.provideAVCaptureOutput()
+            if (output != null && captureSession.canAddOutput(output)) {
+                captureSession.addOutput(output)
+                iosImageAnalyser.initializeAVCaptureOutput(output)
+            }
 
             val videoPreviewLayer = AVCaptureVideoPreviewLayer(session = captureSession).apply {
                 frame = previewView.bounds

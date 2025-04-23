@@ -34,6 +34,9 @@ import tech.kotlinlang.permission.location.LocationRequestResult
 import tech.kotlinlang.permission.result.CameraPermissionResult
 import tech.kotlinlang.permission.result.LocationPermissionResult
 import tech.kotlinlang.permission.result.NotificationPermissionResult
+import androidx.compose.foundation.lazy.LazyColumn
+import tech.kotlinlang.camera.analyser.ImageAnalyser
+import tech.kotlinlang.camera.qr.QrCodeImageAnalyser
 
 @Composable
 @Preview
@@ -133,12 +136,25 @@ private fun CameraPermissionContent(
                 Text("Camera Permission is Granted")
                 val cameraHelper = remember { getCameraHelper() }
                 Spacer(Modifier.height(12.dp))
+
+                val qrCodeImageAnalyser = remember<ImageAnalyser<String>> { QrCodeImageAnalyser() }
+                var extractedString by remember { mutableStateOf<String?>(null) }
+                LaunchedEffect(Unit) {
+                    qrCodeImageAnalyser.setListener {
+                        extractedString = it
+                    }
+                }
                 cameraHelper.CameraContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1F)
-                        .clip(RoundedCornerShape(20.dp))
+                        .clip(RoundedCornerShape(20.dp)),
+                    imageAnalyser = qrCodeImageAnalyser
                 )
+                Spacer(Modifier.height(12.dp))
+                if (extractedString != null) {
+                    Text("Extracted Data: $extractedString")
+                }
             }
         }
     }

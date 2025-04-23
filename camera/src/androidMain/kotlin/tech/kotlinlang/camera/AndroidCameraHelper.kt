@@ -1,6 +1,9 @@
 package tech.kotlinlang.camera
 
+import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -13,10 +16,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import tech.kotlinlang.camera.analyser.AndroidImageAnalyser
+import tech.kotlinlang.camera.analyser.ImageAnalyser
 
 class AndroidCameraHelper : CameraHelper {
+    @OptIn(ExperimentalGetImage::class)
     @Composable
-    override fun CameraContent(modifier: Modifier) {
+    override fun <T> CameraContent(
+        modifier: Modifier,
+        imageAnalyser: ImageAnalyser<T>,
+    ) {
         val context = LocalContext.current
         val lifecycleOwner = LocalLifecycleOwner.current
         val previewView = remember {
@@ -44,9 +53,26 @@ class AndroidCameraHelper : CameraHelper {
                         .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                         .build()
 
+                    val androidImageAnalyser = imageAnalyser as AndroidImageAnalyser<T>
+                    val imageAnalyzer = ImageAnalysis.Builder().build().also {
+                        it.setAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
+                            androidImageAnalyser.setImageProxy(imageProxy)
+                            androidImageAnalyser.setStopListener {
+                                it.clearAnalyzer()
+                                cameraProvider.unbindAll()
+                            }
+                        }
+                    }
+
                     try {
                         cameraProvider.unbindAll()
-                        cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageCapture)
+                        cameraProvider.bindToLifecycle(
+                            lifecycleOwner,
+                            cameraSelector,
+                            preview,
+                            imageCapture,
+                            imageAnalyzer,
+                        )
                         preview.surfaceProvider = previewView.surfaceProvider
                     } catch (e: Exception) {
                         e.printStackTrace()

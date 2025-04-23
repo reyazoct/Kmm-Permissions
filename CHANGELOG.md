@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Add camera content for Android and iOS
+- Add Qr code scanning 
+
 ## [0.4.0] - 2025-04-22
 
 ### Added
