@@ -106,7 +106,7 @@ mavenPublishing {
     coordinates(
         "tech.kotlinlang",
         "camera",
-        "0.5.0"
+        libs.versions.library.version.get(),
     )
 
     pom {
