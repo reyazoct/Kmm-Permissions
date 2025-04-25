@@ -19,7 +19,10 @@ import platform.UIKit.UIViewAutoresizingFlexibleHeight
 import platform.UIKit.UIViewAutoresizingFlexibleWidth
 import tech.kotlinlang.camera.analyser.ImageAnalyser
 import tech.kotlinlang.camera.analyser.IosImageAnalyser
-import platform.AVFoundation.AVCaptureOutput
+import platform.AVFoundation.torchAvailable
+import platform.AVFoundation.setTorchModeOnWithLevel
+import platform.AVFoundation.torchMode
+import platform.AVFoundation.AVCaptureTorchModeOff
 
 class IosCameraHelper : CameraHelper {
     @Composable
@@ -69,5 +72,19 @@ class IosCameraHelper : CameraHelper {
             modifier = modifier.clipToBounds(),
             factory = { previewView },
         )
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    override fun enableFlash(switchOn: Boolean) {
+        val device = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+        if (device?.torchAvailable == true) {
+            device.lockForConfiguration(null)
+            if (switchOn) {
+                device.setTorchModeOnWithLevel(1.0F, null)
+            } else {
+                device.torchMode = AVCaptureTorchModeOff
+            }
+            device.unlockForConfiguration()
+        }
     }
 }

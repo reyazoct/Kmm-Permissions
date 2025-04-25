@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add feature to switch on flash with camera preview in Android and iOS
+
 ## [0.5.0] - 2025-04-23
 
 ### Added

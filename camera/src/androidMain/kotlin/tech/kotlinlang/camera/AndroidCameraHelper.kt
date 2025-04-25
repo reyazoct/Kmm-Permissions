@@ -1,6 +1,7 @@
 package tech.kotlinlang.camera
 
 import androidx.annotation.OptIn
+import androidx.camera.core.CameraControl
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
@@ -9,17 +10,22 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import tech.kotlinlang.camera.analyser.AndroidImageAnalyser
 import tech.kotlinlang.camera.analyser.ImageAnalyser
 
 class AndroidCameraHelper : CameraHelper {
+
+    private var cameraControl: CameraControl? = null
+
     @OptIn(ExperimentalGetImage::class)
     @Composable
     override fun <T> CameraContent(
@@ -66,20 +72,28 @@ class AndroidCameraHelper : CameraHelper {
 
                     try {
                         cameraProvider.unbindAll()
-                        cameraProvider.bindToLifecycle(
+                        val camera = cameraProvider.bindToLifecycle(
                             lifecycleOwner,
                             cameraSelector,
                             preview,
                             imageCapture,
                             imageAnalyzer,
                         )
+                        cameraControl = camera.cameraControl
                         preview.surfaceProvider = previewView.surfaceProvider
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 }, ContextCompat.getMainExecutor(context))
                 previewView
+            },
+            onRelease = {
+                cameraControl = null
             }
         )
+    }
+
+    override fun enableFlash(switchOn: Boolean) {
+        cameraControl?.enableTorch(switchOn)
     }
 }

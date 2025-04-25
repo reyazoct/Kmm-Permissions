@@ -7,4 +7,6 @@ import tech.kotlinlang.camera.analyser.ImageAnalyser
 interface CameraHelper {
     @Composable
     fun <T> CameraContent(modifier: Modifier, imageAnalyser: ImageAnalyser<T>)
+
+    fun enableFlash(switchOn: Boolean)
 }
