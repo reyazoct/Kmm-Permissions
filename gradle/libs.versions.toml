@@ -20,7 +20,7 @@ camera-view = "1.4.1"
 runner = "1.6.2"
 core = "1.6.1"
 bar-code-scanning = "17.2.0"
-library-version = "0.7.0"
+library-version = "0.7.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

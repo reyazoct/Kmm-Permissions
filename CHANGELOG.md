@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.7.1] - 2025-05-06
 
 ### Improvements
 - Add slide in and out animation when amount changes
