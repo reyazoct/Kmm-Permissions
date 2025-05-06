@@ -1,6 +1,8 @@
 package tech.kotlinlang.ui
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -10,12 +12,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import kotlin.math.roundToInt
 
 @Composable
@@ -25,6 +32,27 @@ fun AmountText(
     amountTextConfig: AmountTextConfig = AmountTextConfigLocal.current,
     style: TextStyle = LocalTextStyle.current,
 ) {
+    var previousAmount by remember { mutableStateOf(amount) }
+    val transitionSpecPair = remember {
+        val animationDuration = 300
+        val tweenSpecInt = tween<IntOffset>(durationMillis = animationDuration)
+        val tweenSpecFloat = tween<Float>(durationMillis = animationDuration)
+
+        val first = (slideInVertically(tweenSpecInt) { height -> height } + fadeIn(animationSpec = tweenSpecFloat))
+            .togetherWith(slideOutVertically(tweenSpecInt) { height -> -height } + fadeOut(tweenSpecFloat))
+
+        val second = (slideInVertically(tweenSpecInt) { height -> -height } + fadeIn(tweenSpecFloat))
+            .togetherWith(slideOutVertically(tweenSpecInt) { height -> height } + fadeOut(tweenSpecFloat))
+
+        first to second
+    }
+    val transitionSpec = remember(amount) {
+        if (amount >= previousAmount) {
+            transitionSpecPair.first
+        } else {
+            transitionSpecPair.second
+        }
+    }
     val integerPart = remember(amount) { formatStringWithCommas(amount.toInt().toString()) }
     val decimalPart = remember(amount) {
         val roundedAmount = (amount * 100).roundToInt() / 100.0
@@ -60,9 +88,7 @@ fun AmountText(
     ) {
         AnimatedContent(
             targetState = amountTextConfig.currency.symbol,
-            transitionSpec = {
-                slideInVertically { height -> height } + fadeIn() togetherWith slideOutVertically { height -> -height } + fadeOut()
-            },
+            transitionSpec = { transitionSpec },
         ) { target ->
             Text(
                 text = target,
@@ -76,9 +102,7 @@ fun AmountText(
         integerPart.forEach { part ->
             AnimatedContent(
                 targetState = part,
-                transitionSpec = {
-                    slideInVertically { height -> height } + fadeIn() togetherWith slideOutVertically { height -> -height } + fadeOut()
-                },
+                transitionSpec = { transitionSpec },
             ) { target ->
                 Text(
                     text = target.toString(),
@@ -91,9 +115,7 @@ fun AmountText(
         decimalPart?.forEach { part ->
             AnimatedContent(
                 targetState = part,
-                transitionSpec = {
-                    slideInVertically { height -> height } + fadeIn() togetherWith slideOutVertically { height -> -height } + fadeOut()
-                },
+                transitionSpec = { transitionSpec },
             ) { target ->
                 Text(
                     text = target.toString(),
@@ -105,6 +127,10 @@ fun AmountText(
                 )
             }
         }
+    }
+
+    LaunchedEffect(amount) {
+        previousAmount = amount
     }
 }
 

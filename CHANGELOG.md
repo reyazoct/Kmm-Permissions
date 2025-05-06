@@ -6,10 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Improvements
 - Add slide in and out animation when amount changes
+- Add logic to slide up and down if amount is increasing or decreasing
 
 ## [0.7.0] - 2025-05-06
 
 ### Added
+- Add slide in and out animation when amount changes
 
 ## [0.6.0] - 2025-04-25
 
