@@ -56,7 +56,7 @@ private fun AmountTextContent(modifier: Modifier) {
     CompositionLocalProvider(
         AmountTextConfigLocal provides AmountTextConfig.Default.copy(
             symbolRatio = 0.8,
-            decimalRatio = 0.7,
+            decimalRatio = 0.2,
             symbolFontWeightDiff = 3,
             decimalFontWeightDiff = 3,
         )
@@ -66,17 +66,17 @@ private fun AmountTextContent(modifier: Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            var amount by remember { mutableStateOf(Random.nextDouble(100.0, 1000.0)) }
+            var amount by remember { mutableStateOf(Random.nextDouble(10.0, 10000.0)) }
             AmountText(
                 amount = amount,
                 style = LocalTextStyle.current.copy(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
+                    fontSize = 48.sp,
                 )
             )
             Button(
                 onClick = {
-                    amount = Random.nextDouble(100.0, 1000.0);
+                    amount = Random.nextDouble(10.0, 10000.0);
                 },
             ) {
                 Text("Random")

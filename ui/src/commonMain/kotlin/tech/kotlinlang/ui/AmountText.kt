@@ -1,14 +1,12 @@
 package tech.kotlinlang.ui
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,10 +16,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.IntOffset
 import kotlin.math.roundToInt
 
@@ -34,7 +34,7 @@ fun AmountText(
 ) {
     var previousAmount by remember { mutableStateOf(amount) }
     val transitionSpecPair = remember {
-        val animationDuration = 300
+        val animationDuration = amountTextConfig.transitionDuration.inWholeMilliseconds.toInt()
         val tweenSpecInt = tween<IntOffset>(durationMillis = animationDuration)
         val tweenSpecFloat = tween<Float>(durationMillis = animationDuration)
 
@@ -52,12 +52,6 @@ fun AmountText(
         } else {
             transitionSpecPair.second
         }
-    }
-    val integerPart = remember(amount) { formatStringWithCommas(amount.toInt().toString()) }
-    val decimalPart = remember(amount) {
-        val roundedAmount = (amount * 100).roundToInt() / 100.0
-        val dec = ((roundedAmount - amount.toInt()) * 100).toInt()
-        if (dec > 0) ".${dec.toString().padStart(2, '0')}" else null
     }
     val symbolFontWeightAndSize = remember {
         val symbolFontWeightInt = style.fontWeight?.weight?.minus(amountTextConfig.symbolFontWeightDiff * 100)
@@ -82,51 +76,44 @@ fun AmountText(
         fontWeight to style.fontSize * amountTextConfig.decimalRatio
     }
 
-    Row(
+    AnimatedContent(
         modifier = modifier,
-        verticalAlignment = Alignment.Bottom,
-    ) {
-        AnimatedContent(
-            targetState = amountTextConfig.currency.symbol,
-            transitionSpec = { transitionSpec },
-        ) { target ->
-            Text(
-                text = target,
-                style = style.copy(
-                    fontSize = symbolFontWeightAndSize.second,
-                    fontWeight = symbolFontWeightAndSize.first,
-                    lineHeight = style.fontSize,
-                )
-            )
+        targetState = amount,
+        transitionSpec = { transitionSpec },
+    ) { target ->
+        val integerPart = remember(target) { formatStringWithCommas(target.toInt().toString()) }
+        val decimalPart = remember(target) {
+            val roundedAmount = (target * 100).roundToInt() / 100.0
+            val dec = ((roundedAmount - target.toInt()) * 100).toInt()
+            if (dec > 0) ".${dec.toString().padStart(2, '0')}" else null
         }
-        integerPart.forEach { part ->
-            AnimatedContent(
-                targetState = part,
-                transitionSpec = { transitionSpec },
-            ) { target ->
-                Text(
-                    text = target.toString(),
-                    style = style.copy(
-                        lineHeight = style.fontSize,
-                    )
-                )
-            }
-        }
-        decimalPart?.forEach { part ->
-            AnimatedContent(
-                targetState = part,
-                transitionSpec = { transitionSpec },
-            ) { target ->
-                Text(
-                    text = target.toString(),
-                    style = style.copy(
-                        fontSize = decimalFontWeightAndSize.second,
+        Text(
+            modifier = Modifier,
+            text = buildAnnotatedString {
+                withStyle(
+                    style.toSpanStyle().copy(
+                        fontSize = symbolFontWeightAndSize.second,
                         fontWeight = decimalFontWeightAndSize.first,
-                        lineHeight = style.fontSize,
                     )
-                )
-            }
-        }
+                ) {
+                    append(amountTextConfig.currency.symbol)
+                }
+                append(integerPart)
+                if (decimalPart != null) {
+                    withStyle(
+                        style.toSpanStyle().copy(
+                            fontSize = decimalFontWeightAndSize.second,
+                            fontWeight = decimalFontWeightAndSize.first
+                        ),
+                    ) {
+                        append(decimalPart)
+                    }
+                }
+            },
+            style = style,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 
     LaunchedEffect(amount) {

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Bugfixes
+- Fix alignment issue for integer and decimal part
+
+### Added
+- Add option to handle animation speed in Amount Text
+
 ## [0.7.1] - 2025-05-06
 
 ### Improvements
