@@ -1,16 +1,21 @@
 package tech.kotlinlang.ui
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import kotlin.math.roundToInt
 
 @Composable
@@ -26,49 +31,81 @@ fun AmountText(
         val dec = ((roundedAmount - amount.toInt()) * 100).toInt()
         if (dec > 0) ".${dec.toString().padStart(2, '0')}" else null
     }
-    Text(
+    val symbolFontWeightAndSize = remember {
+        val symbolFontWeightInt = style.fontWeight?.weight?.minus(amountTextConfig.symbolFontWeightDiff * 100)
+        val fontWeight = if (symbolFontWeightInt != null && symbolFontWeightInt < 100) {
+            FontWeight.Light
+        } else if (symbolFontWeightInt != null) {
+            FontWeight(symbolFontWeightInt)
+        } else {
+            style.fontWeight
+        }
+        fontWeight to style.fontSize * amountTextConfig.symbolRatio
+    }
+    val decimalFontWeightAndSize = remember {
+        val decimalFontWeightInt = style.fontWeight?.weight?.minus(amountTextConfig.decimalFontWeightDiff * 100)
+        val fontWeight = if (decimalFontWeightInt != null && decimalFontWeightInt < 100) {
+            FontWeight.Light
+        } else if (decimalFontWeightInt != null) {
+            FontWeight(decimalFontWeightInt)
+        } else {
+            style.fontWeight
+        }
+        fontWeight to style.fontSize * amountTextConfig.decimalRatio
+    }
+
+    Row(
         modifier = modifier,
-        text = buildAnnotatedString {
-            val symbolFontWeightInt = style.fontWeight?.weight?.minus(amountTextConfig.symbolFontWeightDiff * 100)
-            val symbolFontWeight = if (symbolFontWeightInt != null && symbolFontWeightInt < 100) {
-                FontWeight.Light
-            } else if (symbolFontWeightInt != null) {
-                FontWeight(symbolFontWeightInt)
-            } else {
-                style.fontWeight
-            }
-            withStyle(
-                style.toSpanStyle().copy(
-                    fontSize = style.fontSize * amountTextConfig.symbolRatio,
-                    fontWeight = symbolFontWeight,
+        verticalAlignment = Alignment.Bottom,
+    ) {
+        AnimatedContent(
+            targetState = amountTextConfig.currency.symbol,
+            transitionSpec = {
+                slideInVertically { height -> height } + fadeIn() togetherWith slideOutVertically { height -> -height } + fadeOut()
+            },
+        ) { target ->
+            Text(
+                text = target,
+                style = style.copy(
+                    fontSize = symbolFontWeightAndSize.second,
+                    fontWeight = symbolFontWeightAndSize.first,
+                    lineHeight = style.fontSize,
                 )
-            ) {
-                append(amountTextConfig.currency.symbol)
+            )
+        }
+        integerPart.forEach { part ->
+            AnimatedContent(
+                targetState = part,
+                transitionSpec = {
+                    slideInVertically { height -> height } + fadeIn() togetherWith slideOutVertically { height -> -height } + fadeOut()
+                },
+            ) { target ->
+                Text(
+                    text = target.toString(),
+                    style = style.copy(
+                        lineHeight = style.fontSize,
+                    )
+                )
             }
-            append(integerPart)
-            if (decimalPart != null) {
-                val decimalFontWeightInt = style.fontWeight?.weight?.minus(amountTextConfig.decimalFontWeightDiff * 100)
-                val decimalFontWeight = if (decimalFontWeightInt != null && decimalFontWeightInt < 100) {
-                    FontWeight.Light
-                } else if (decimalFontWeightInt != null) {
-                    FontWeight(decimalFontWeightInt)
-                } else {
-                    style.fontWeight
-                }
-                withStyle(
-                    style.toSpanStyle().copy(
-                        fontSize = style.fontSize * amountTextConfig.decimalRatio,
-                        fontWeight = decimalFontWeight,
-                    ),
-                ) {
-                    append(decimalPart)
-                }
+        }
+        decimalPart?.forEach { part ->
+            AnimatedContent(
+                targetState = part,
+                transitionSpec = {
+                    slideInVertically { height -> height } + fadeIn() togetherWith slideOutVertically { height -> -height } + fadeOut()
+                },
+            ) { target ->
+                Text(
+                    text = target.toString(),
+                    style = style.copy(
+                        fontSize = decimalFontWeightAndSize.second,
+                        fontWeight = decimalFontWeightAndSize.first,
+                        lineHeight = style.fontSize,
+                    )
+                )
             }
-        },
-        style = style,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-    )
+        }
+    }
 }
 
 private fun formatStringWithCommas(input: String): String {

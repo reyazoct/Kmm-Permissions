@@ -2,10 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Improvements
+- Add slide in and out animation when amount changes
+
 ## [0.7.0] - 2025-05-06
 
 ### Added
-- Add amount text to show currency and decimal part in Android and iOS
 
 ## [0.6.0] - 2025-04-25
 
