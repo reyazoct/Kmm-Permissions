@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.7.2] - 2025-05-06
 
 ### Bugfixes
 - Fix alignment issue for integer and decimal part
