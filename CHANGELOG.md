@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add amount text to show currency and decimal part in Android and iOS
+
 ## [0.6.0] - 2025-04-25
 
 ### Added

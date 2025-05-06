@@ -1,6 +1,7 @@
 package tech.kotlinlang.permission.ui.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -36,6 +37,7 @@ import tech.kotlinlang.permission.result.NotificationPermissionResult
 @Composable
 fun HomeScreen(
     onCameraClick: () -> Unit,
+    onUiComponentsClick: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -76,10 +78,33 @@ fun HomeScreen(
             )
         }
         item {
+            UiContentScreen(
+                modifier = commonModifier,
+                onUiComponentsClick = onUiComponentsClick,
+            )
+        }
+        item {
             Spacer(
                 Modifier.height(12.dp)
                     .windowInsetsPadding(WindowInsets.navigationBars)
             )
+        }
+    }
+}
+
+@Composable
+private fun UiContentScreen(
+    modifier: Modifier,
+    onUiComponentsClick: () -> Unit,
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        Button(
+            onClick = onUiComponentsClick,
+        ) {
+            Text("Goto UI Components")
         }
     }
 }

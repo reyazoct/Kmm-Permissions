@@ -46,6 +46,7 @@ kotlin {
             implementation(project(":permission"))
             implementation(project(":camera"))
             implementation(project(":camera-qr"))
+            implementation(project(":ui"))
         }
     }
 }

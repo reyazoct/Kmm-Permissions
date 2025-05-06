@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.kotlinlang.permission.ui.camera.CameraScreen
+import tech.kotlinlang.permission.ui.component.UiComponentsScreen
 import tech.kotlinlang.permission.ui.home.HomeScreen
 
 @Composable
@@ -17,10 +18,14 @@ fun App() {
         var currentScreen by remember { mutableStateOf("home_screen") }
         when (currentScreen) {
             "home_screen" -> {
-                HomeScreen(onCameraClick = { currentScreen = "camera_screen" })
+                HomeScreen(
+                    onCameraClick = { currentScreen = "camera_screen" },
+                    onUiComponentsClick = { currentScreen = "ui_components_screen" }
+                )
             }
 
             "camera_screen" -> CameraScreen()
+            "ui_components_screen" -> UiComponentsScreen()
         }
     }
 }
