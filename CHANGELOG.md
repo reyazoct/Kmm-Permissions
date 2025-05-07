@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Add record audio permission for android
+- Add record audio permission for iOS
 
 ## [0.7.2] - 2025-05-06
 

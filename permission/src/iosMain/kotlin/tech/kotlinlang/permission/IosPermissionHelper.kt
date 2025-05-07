@@ -7,6 +7,9 @@ import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.authorizationStatusForMediaType
 import platform.AVFoundation.requestAccessForMediaType
+import platform.AVFAudio.AVAudioSession
+import platform.AVFAudio.AVAudioSessionRecordPermissionDenied
+import platform.AVFAudio.AVAudioSessionRecordPermissionGranted
 import platform.CoreLocation.CLLocationManager
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
@@ -20,8 +23,8 @@ import platform.UserNotifications.UNUserNotificationCenter
 import tech.kotlinlang.permission.result.CameraPermissionResult
 import tech.kotlinlang.permission.result.LocationPermissionResult
 import tech.kotlinlang.permission.result.NotificationPermissionResult
+import tech.kotlinlang.permission.result.RecordAudioPermissionResult
 import kotlin.coroutines.resume
-
 
 class IosPermissionHelper : PermissionHelper {
 
@@ -33,6 +36,7 @@ class IosPermissionHelper : PermissionHelper {
             Permission.Location -> checkLocationPermission()
             Permission.Notification -> checkNotificationPermission()
             Permission.Camera -> checkCameraPermission()
+            Permission.RecordAudio -> checkRecordAudioPermission()
         } as T
     }
 
@@ -42,6 +46,7 @@ class IosPermissionHelper : PermissionHelper {
             Permission.Location -> requestLocationPermission()
             Permission.Notification -> requestNotificationPermission()
             Permission.Camera -> requestCameraPermission()
+            Permission.RecordAudio -> requestRecordAudioPermission()
         } as T
     }
 
@@ -110,6 +115,30 @@ class IosPermissionHelper : PermissionHelper {
         return suspendCancellableCoroutine { continuation ->
             UNUserNotificationCenter.currentNotificationCenter().requestAuthorizationWithOptions(options = options) { granted, error ->
                 checkNotificationPermission { continuation.resume(it) }
+            }
+        }
+    }
+
+    private fun checkRecordAudioPermission(callback: (RecordAudioPermissionResult) -> Unit) {
+        val status = AVAudioSession.sharedInstance().recordPermission
+        val result = when (status) {
+            AVAudioSessionRecordPermissionGranted -> RecordAudioPermissionResult.Granted
+            AVAudioSessionRecordPermissionDenied -> RecordAudioPermissionResult.NotAllowed
+            else -> RecordAudioPermissionResult.Denied
+        }
+        callback(result)
+    }
+
+    private suspend fun checkRecordAudioPermission(): RecordAudioPermissionResult {
+        return suspendCancellableCoroutine { continuation ->
+            checkRecordAudioPermission { continuation.resume(it) }
+        }
+    }
+
+    private suspend fun requestRecordAudioPermission(): RecordAudioPermissionResult {
+        return suspendCancellableCoroutine { continuation ->
+            AVAudioSession.sharedInstance().requestRecordPermission {
+                checkRecordAudioPermission { continuation.resume(it) }
             }
         }
     }
