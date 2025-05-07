@@ -33,6 +33,7 @@ import tech.kotlinlang.permission.location.LocationRequestResult
 import tech.kotlinlang.permission.result.CameraPermissionResult
 import tech.kotlinlang.permission.result.LocationPermissionResult
 import tech.kotlinlang.permission.result.NotificationPermissionResult
+import tech.kotlinlang.permission.result.RecordAudioPermissionResult
 
 @Composable
 fun HomeScreen(
@@ -70,6 +71,9 @@ fun HomeScreen(
         }
         item {
             NotificationPermissionContent(commonModifier)
+        }
+        item {
+            RecordAudioPermissionContent(commonModifier)
         }
         item {
             CameraPermissionContent(
@@ -162,6 +166,49 @@ private fun CameraPermissionContent(
                 ) {
                     Text("Go to camera")
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecordAudioPermissionContent(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        var recordAudioPermissionResult by remember {
+            mutableStateOf<RecordAudioPermissionResult>(
+                RecordAudioPermissionResult.Denied
+            )
+        }
+        val scope = rememberCoroutineScope()
+        val permissionHelper = remember { HelperHolder.getPermissionHelperInstance() }
+        LaunchedEffect(Unit) {
+            scope.launch {
+                recordAudioPermissionResult = permissionHelper.checkIsPermissionGranted(Permission.RecordAudio)
+            }
+        }
+        when (recordAudioPermissionResult) {
+            RecordAudioPermissionResult.Denied -> {
+                Text("Record Audio Permission is not allowed yet")
+                Button(
+                    onClick = {
+                        scope.launch {
+                            recordAudioPermissionResult = permissionHelper.requestForPermission(Permission.RecordAudio)
+                        }
+                    },
+                ) {
+                    Text("Allow Permission")
+                }
+            }
+            RecordAudioPermissionResult.Granted -> {
+                Text("Record Audio Permission is Granted")
+            }
+            RecordAudioPermissionResult.NotAllowed -> {
+                Text("Record Audio Permission is Not Allowed")
             }
         }
     }

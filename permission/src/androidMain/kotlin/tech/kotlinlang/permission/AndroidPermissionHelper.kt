@@ -13,6 +13,7 @@ import tech.kotlinlang.permission.result.CameraPermissionResult
 import tech.kotlinlang.permission.result.LocationPermissionResult
 import tech.kotlinlang.permission.result.NotificationPermissionResult
 import androidx.core.content.edit
+import tech.kotlinlang.permission.result.RecordAudioPermissionResult
 
 class AndroidPermissionHelper(
     private val permissionInitiation: PermissionInitiation
@@ -29,6 +30,7 @@ class AndroidPermissionHelper(
             Permission.Location -> checkLocationPermission()
             Permission.Notification -> checkNotificationPermission()
             Permission.Camera -> checkCameraPermission()
+            Permission.RecordAudio -> checkRecordAudioPermission()
         } as T
     }
 
@@ -38,6 +40,7 @@ class AndroidPermissionHelper(
             Permission.Location -> requestLocationPermission()
             Permission.Notification -> requestNotificationPermission()
             Permission.Camera -> requestCameraPermission()
+            Permission.RecordAudio -> requestRecordAudioPermission()
         } as T
     }
 
@@ -141,5 +144,32 @@ class AndroidPermissionHelper(
             sharedPref.edit { putBoolean("location.permission", true) }
         }
         return checkLocationPermission()
+    }
+
+    private suspend fun checkRecordAudioPermission(): RecordAudioPermissionResult {
+        val activity = permissionInitiation.getActivity()
+        val isUsed = sharedPref.getBoolean("record.audio.permission", false)
+        return if (ContextCompat.checkSelfPermission(
+                activity, Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            RecordAudioPermissionResult.Granted
+        } else if (isUsed && !ActivityCompat.shouldShowRequestPermissionRationale(
+                activity,
+                Manifest.permission.RECORD_AUDIO,
+            )
+        ) {
+            RecordAudioPermissionResult.NotAllowed
+        } else {
+            RecordAudioPermissionResult.Denied
+        }
+    }
+
+    private suspend fun requestRecordAudioPermission(): RecordAudioPermissionResult {
+        val result = permissionInitiation.requestPermission(Manifest.permission.RECORD_AUDIO)
+        if (!result) {
+            sharedPref.edit { putBoolean("record.audio.permission", true) }
+        }
+        return checkRecordAudioPermission()
     }
 }

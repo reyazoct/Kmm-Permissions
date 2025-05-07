@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add record audio permission for android
+
 ## [0.7.2] - 2025-05-06
 
 ### Bugfixes
