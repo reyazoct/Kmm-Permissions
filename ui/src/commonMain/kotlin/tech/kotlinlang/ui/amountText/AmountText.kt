@@ -1,4 +1,4 @@
-package tech.kotlinlang.ui
+package tech.kotlinlang.ui.amountText
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween

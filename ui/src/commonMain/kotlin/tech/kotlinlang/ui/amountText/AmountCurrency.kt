@@ -1,4 +1,4 @@
-package tech.kotlinlang.ui
+package tech.kotlinlang.ui.amountText
 
 sealed class AmountCurrency {
     data object IndianRupee: AmountCurrency()

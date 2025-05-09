@@ -1,4 +1,4 @@
-package tech.kotlinlang.ui
+package tech.kotlinlang.ui.amountText
 
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds

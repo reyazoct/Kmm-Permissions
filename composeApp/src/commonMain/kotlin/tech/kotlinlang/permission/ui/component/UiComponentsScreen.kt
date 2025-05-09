@@ -2,6 +2,7 @@ package tech.kotlinlang.permission.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -22,9 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import tech.kotlinlang.ui.AmountText
-import tech.kotlinlang.ui.AmountTextConfig
-import tech.kotlinlang.ui.AmountTextConfigLocal
+import quantityChanger.QuantityChanger
+import quantityChanger.QuantityChangerConfig
+import tech.kotlinlang.ui.amountText.AmountText
+import tech.kotlinlang.ui.amountText.AmountTextConfig
+import tech.kotlinlang.ui.amountText.AmountTextConfigLocal
 import kotlin.random.Random
 
 @Composable
@@ -48,6 +52,32 @@ fun UiComponentsScreen() {
         item {
             AmountTextContent(commonModifier)
         }
+        item {
+            QuantityChangerContent(commonModifier)
+        }
+    }
+}
+
+@Composable
+private fun QuantityChangerContent(modifier: Modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        var currentQuantity by remember { mutableIntStateOf(0) }
+        QuantityChanger(
+            currentQuantity = currentQuantity,
+            quantityTransformer = { "$it Box" },
+            onQuantityChange = {
+                currentQuantity = it
+            },
+            quantityChangerConfig = QuantityChangerConfig.Default.copy(
+                textStyle = QuantityChangerConfig.Default.textStyle.copy(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            ),
+        )
     }
 }
 

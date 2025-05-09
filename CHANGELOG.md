@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add Quantity Changer in UI module
+
 ## [0.7.3] - 2025-05-07
 
 ### Added
