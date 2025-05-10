@@ -24,7 +24,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 
 @Composable
 fun QuantityChanger(
@@ -60,19 +65,20 @@ fun QuantityChanger(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(quantityChangerConfig.gap),
     ) {
+        val previousIconShape = quantityChangerConfig.actionShape
         Icon(
             modifier = Modifier
                 .background(
                     color = quantityChangerConfig.actionBackgroundColor,
-                    shape = quantityChangerConfig.actionShape
+                    shape = previousIconShape,
                 )
                 .border(
                     width = quantityChangerConfig.actionBorderWidth,
                     color = quantityChangerConfig.actionBorderColor,
-                    shape = quantityChangerConfig.actionShape,
+                    shape = previousIconShape,
                 ).padding(
                     quantityChangerConfig.actionPaddingValues
-                ).clip(quantityChangerConfig.actionShape)
+                ).clip(previousIconShape)
                 .clickable { onQuantityChange(currentQuantity - 1) },
             imageVector = quantityChangerConfig.prevIcon,
             contentDescription = null,
@@ -96,20 +102,22 @@ fun QuantityChanger(
                 style = quantityChangerConfig.textStyle,
             )
         }
+        val nextIconShape = if (quantityChangerConfig.flipShape) quantityChangerConfig.actionShape
+        else quantityChangerConfig.actionShape.flip()
         Icon(
             modifier = Modifier
                 .background(
                     color = quantityChangerConfig.actionBackgroundColor,
-                    shape = quantityChangerConfig.actionShape
+                    shape = nextIconShape
                 )
                 .border(
                     width = quantityChangerConfig.actionBorderWidth,
                     color = quantityChangerConfig.actionBorderColor,
-                    shape = quantityChangerConfig.actionShape,
+                    shape = nextIconShape,
                 )
                 .padding(
                     quantityChangerConfig.actionPaddingValues
-                ).clip(quantityChangerConfig.actionShape)
+                ).clip(nextIconShape)
                 .clickable { onQuantityChange(currentQuantity + 1) },
             imageVector = quantityChangerConfig.nextIcon,
             contentDescription = null,
@@ -118,5 +126,18 @@ fun QuantityChanger(
     }
     LaunchedEffect(currentQuantity) {
         previousQuantity = currentQuantity
+    }
+}
+
+private fun Shape.flip(): Shape {
+    return object : Shape {
+        override fun createOutline(
+            size: Size,
+            layoutDirection: LayoutDirection,
+            density: Density
+        ): Outline {
+            val layoutDirection = if (layoutDirection == LayoutDirection.Ltr) LayoutDirection.Rtl else LayoutDirection.Ltr
+            return this@flip.createOutline(size, layoutDirection, density)
+        }
     }
 }

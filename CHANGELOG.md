@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add option to flip the shape on next in Quantity Changer in UI module
+
 ## [0.8.0] - 2025-05-10
 
 ### Added

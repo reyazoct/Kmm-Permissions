@@ -32,6 +32,7 @@ data class QuantityChangerConfig(
     val nextIcon: ImageVector,
     val prevIcon: ImageVector,
     val gap: Dp,
+    val flipShape: Boolean
 ) {
     companion object {
         @get:ReadOnlyComposable
@@ -53,6 +54,7 @@ data class QuantityChangerConfig(
                 nextIcon = Icons.Default.Add,
                 prevIcon = Icons.Default.Delete,
                 gap = 4.dp,
+                flipShape = false,
             )
     }
 }
