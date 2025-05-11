@@ -81,8 +81,6 @@ fun QuantityChanger(
                     width = quantityChangerConfig.actionBorderWidth,
                     color = quantityChangerConfig.actionBorderColor,
                     shape = previousIconShape,
-                ).padding(
-                    quantityChangerConfig.actionPaddingValues
                 ).clip(previousIconShape)
                 .pointerInput(Unit) {
                     detectTapGestures(
@@ -97,7 +95,10 @@ fun QuantityChanger(
                             job.cancel()
                         }
                     )
-                },
+                }
+                .padding(
+                    quantityChangerConfig.actionPaddingValues
+                ),
             imageVector = quantityChangerConfig.prevIcon,
             contentDescription = null,
             tint = quantityChangerConfig.actionIconTint,
@@ -132,9 +133,6 @@ fun QuantityChanger(
                     width = quantityChangerConfig.actionBorderWidth,
                     color = quantityChangerConfig.actionBorderColor,
                     shape = nextIconShape,
-                )
-                .padding(
-                    quantityChangerConfig.actionPaddingValues
                 ).clip(nextIconShape)
                 .pointerInput(Unit) {
                     detectTapGestures(
@@ -149,7 +147,10 @@ fun QuantityChanger(
                             job.cancel()
                         }
                     )
-                },
+                }
+                .padding(
+                    quantityChangerConfig.actionPaddingValues
+                ),
             imageVector = quantityChangerConfig.nextIcon,
             contentDescription = null,
             tint = quantityChangerConfig.actionIconTint,
