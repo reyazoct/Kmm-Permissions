@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 - Add logic to hold and press to increase and decrease quantity in Quantity Changer in UI module
 - Fix ripple effect issue in icon in Quantity Changer in UI module
 
-## Fixed
+### Fixed
 - Add proper not implemented error when PermissionInitiation.setActivity(this) is not added.
 
 ## [0.8.1] - 2025-05-10
