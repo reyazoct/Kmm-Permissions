@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.8.2] - 2025-05-16
 
 ### Improvements
 - Add logic to hold and press to increase and decrease quantity in Quantity Changer in UI module
