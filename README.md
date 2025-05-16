@@ -40,8 +40,19 @@ Kmm-Permissions is a Kotlin Multiplatform library designed to simplify permissio
     <key>NSCameraUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your camera</string>
     ```
+4. Add below in `MainActivity` for `androidMain` to initialize permission manager in Android.
 
-4. Use `getPermissionHelper` extension function from `commonMain` which helps to create new instance for permission helper class.
+   ```kotlin
+   override fun onCreate(savedInstanceState: Bundle?) {
+       super.onCreate(savedInstanceState)
+       PermissionInitiation.setActivity(this) // Initialize here
+       setContent {
+           // ...
+       }
+   }
+   ```
+
+5. Use `getPermissionHelper` extension function from `commonMain` which helps to create new instance for permission helper class.
 
     ```kotlin
     // Permission Helper to request permission
@@ -51,7 +62,7 @@ Kmm-Permissions is a Kotlin Multiplatform library designed to simplify permissio
     val locationHelper = HelperHolder.getLocationHelperInstance()
     ```
 
-5. Use `permissionHelper` instance to check permission state or request permission. Both functions are suspended, use `Dispatcher.Main` for access permissions. Also you can use `locationHelper` to fetch location updates.
+6. Use `permissionHelper` instance to check permission state or request permission. Both functions are suspended, use `Dispatcher.Main` for access permissions. Also you can use `locationHelper` to fetch location updates.
 
     ```kotlin
     // Use permission object, Permission.Location, Permission.Notification, Permission.Camera
