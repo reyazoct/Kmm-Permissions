@@ -50,8 +50,9 @@ class PermissionInitiation private constructor() {
         }
 
         internal fun getInstance(): PermissionInitiation {
-            return permissionInitiation
-                ?: throw IllegalStateException("PermissionInitiation not initialized")
+            return permissionInitiation ?: throw NotImplementedError(
+                message = "Please add 'PermissionInitiation.setActivity(this)' in your MainActivity during onCreate."
+            )
         }
     }
 }
