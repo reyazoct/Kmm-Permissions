@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.9.1] - 2025-05-22
 
 ### Added
 - Add modifier in PdfViewer in PDFViewer module
