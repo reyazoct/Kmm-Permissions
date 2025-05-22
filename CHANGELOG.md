@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Create UI for pdf viewer in Android in PDFViewer module
+
+---
+
 ## [0.8.2] - 2025-05-16
 
 ### Improvements

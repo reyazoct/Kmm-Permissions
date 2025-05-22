@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import quantityChanger.QuantityChanger
 import quantityChanger.QuantityChangerConfig
+import tech.kotlinlang.pdfviewer.PdfViewer
+import tech.kotlinlang.pdfviewer.PdfViewerState
+import tech.kotlinlang.pdfviewer.rememberPdfViewerState
 import tech.kotlinlang.ui.amountText.AmountText
 import tech.kotlinlang.ui.amountText.AmountTextConfig
 import tech.kotlinlang.ui.amountText.AmountTextConfigLocal
@@ -54,6 +57,23 @@ fun UiComponentsScreen() {
         }
         item {
             QuantityChangerContent(commonModifier)
+        }
+        item {
+            PdfViewerContent(commonModifier)
+        }
+    }
+}
+
+@Composable
+private fun PdfViewerContent(modifier: Modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        val pdfViewerState by rememberPdfViewerState("https://kotlinlang.org/docs/kotlin-reference.pdf")
+        val currentPdfViewerState = pdfViewerState
+        if (currentPdfViewerState is PdfViewerState.Success) {
+            PdfViewer(currentPdfViewerState)
         }
     }
 }
@@ -106,7 +126,7 @@ private fun AmountTextContent(modifier: Modifier) {
             )
             Button(
                 onClick = {
-                    amount = Random.nextDouble(10.0, 10000.0);
+                    amount = Random.nextDouble(10.0, 10000.0)
                 },
             ) {
                 Text("Random")

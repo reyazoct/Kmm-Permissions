@@ -26,7 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.ktor.client.HttpClient
 import kotlinx.coroutines.launch
+import tech.kotlinlang.pdfviewer.PdfViewerConfig
 import tech.kotlinlang.permission.HelperHolder
 import tech.kotlinlang.permission.Permission
 import tech.kotlinlang.permission.location.LocationRequestResult
@@ -40,6 +42,9 @@ fun HomeScreen(
     onCameraClick: () -> Unit,
     onUiComponentsClick: () -> Unit,
 ) {
+    LaunchedEffect(Unit) {
+        PdfViewerConfig.init(HttpClient())
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth(),
