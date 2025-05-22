@@ -43,15 +43,15 @@ import platform.CoreGraphics.CGRectGetWidth
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable
-actual fun PdfViewerLoaded(modifier: Modifier, bytes: ByteArray) {
+internal actual fun PdfViewerLoaded(modifier: Modifier, bytes: ByteArray) {
     val pdfDocument = remember {
         val nsData = bytes.toNSData()
         PDFDocument(nsData)
     }
 
     LazyColumn(modifier = modifier) {
-        items(pdfDocument?.pageCount?.toInt() ?: 0) { index ->
-            val page: PDFPage? = pdfDocument?.pageAtIndex(index.toULong()) ?: return@items
+        items(pdfDocument.pageCount.toInt()) { index ->
+            val page: PDFPage? = pdfDocument.pageAtIndex(index.toULong()) ?: return@items
             val bounds = page?.boundsForBox(kPDFDisplayBoxMediaBox) ?: return@items
             val width = CGRectGetWidth(bounds)
             val height = CGRectGetHeight(bounds)

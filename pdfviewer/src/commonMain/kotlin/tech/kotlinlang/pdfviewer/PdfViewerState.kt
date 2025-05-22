@@ -9,9 +9,7 @@ sealed class PdfViewerState {
 
             other as Success
 
-            if (!bytes.contentEquals(other.bytes)) return false
-
-            return true
+            return bytes.contentEquals(other.bytes)
         }
 
         override fun hashCode(): Int {

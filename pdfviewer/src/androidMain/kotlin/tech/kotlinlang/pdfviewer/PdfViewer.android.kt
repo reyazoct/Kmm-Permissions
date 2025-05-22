@@ -8,7 +8,6 @@ import android.widget.ImageView
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,7 +18,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import java.io.File
 
 @Composable
-actual fun PdfViewerLoaded(
+internal actual fun PdfViewerLoaded(
     modifier: Modifier,
     bytes: ByteArray
 ) {

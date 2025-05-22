@@ -3,7 +3,7 @@ package tech.kotlinlang.pdfviewer
 import io.ktor.client.HttpClient
 
 object PdfViewerConfig {
-    var httpClient: HttpClient? = null
+    private var httpClient: HttpClient? = null
 
     fun init(client: HttpClient) {
         httpClient = client

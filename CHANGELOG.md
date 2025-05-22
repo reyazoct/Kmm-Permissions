@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add modifier in PdfViewer in PDFViewer module
+- Add option to pass any pdfViewerState in PDFViewer module
+- Add circular progress while pdf url is loading in PDFViewer module
+
+---
+
 ## [0.9.0] - 2025-05-22
 
 ### Added
