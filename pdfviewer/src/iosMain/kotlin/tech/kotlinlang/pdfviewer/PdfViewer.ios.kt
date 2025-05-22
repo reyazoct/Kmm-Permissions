@@ -19,6 +19,7 @@ import platform.PDFKit.PDFPage
 import platform.CoreGraphics.CGSizeMake
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import kotlinx.cinterop.get
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorType
@@ -51,21 +52,22 @@ internal actual fun PdfViewerLoaded(modifier: Modifier, bytes: ByteArray) {
 
     LazyColumn(modifier = modifier) {
         items(pdfDocument.pageCount.toInt()) { index ->
-            val page: PDFPage? = pdfDocument.pageAtIndex(index.toULong()) ?: return@items
-            val bounds = page?.boundsForBox(kPDFDisplayBoxMediaBox) ?: return@items
-            val width = CGRectGetWidth(bounds)
-            val height = CGRectGetHeight(bounds)
-            val size = CGSizeMake(width, height)
-            val thumbnail: UIImage? = page.thumbnailOfSize(size, 0)
-            val imageBitmap: ImageBitmap? = thumbnail?.imageBitmap
+            val imageBitmap = remember {
+                val page: PDFPage? = pdfDocument.pageAtIndex(index.toULong()) ?: return@remember null
+                val bounds = page?.boundsForBox(kPDFDisplayBoxMediaBox) ?: return@remember null
+                val width = CGRectGetWidth(bounds)
+                val height = CGRectGetHeight(bounds)
+                val size = CGSizeMake(width, height)
+                val thumbnail: UIImage? = page.thumbnailOfSize(size, 0)
+                thumbnail?.imageBitmap
+            }
 
             if (imageBitmap != null) {
                 Image(
+                    modifier = Modifier.fillMaxWidth(),
                     bitmap = imageBitmap,
                     contentDescription = "PDF Page $index",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                    contentScale = ContentScale.FillWidth
                 )
             }
         }
@@ -73,7 +75,7 @@ internal actual fun PdfViewerLoaded(modifier: Modifier, bytes: ByteArray) {
 }
 
 @OptIn(ExperimentalForeignApi::class)
-val UIImage.imageBitmap: ImageBitmap?
+private val UIImage.imageBitmap: ImageBitmap?
     get() {
         val imageRef = CGImageCreateCopyWithColorSpace(this.CGImage, CGColorSpaceCreateDeviceRGB()) ?: return null
 
