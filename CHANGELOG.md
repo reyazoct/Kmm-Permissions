@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Improvements
+- Add Image to take full width in Android in PDFViewer module
+
+---
+
 ## [0.9.1] - 2025-05-22
 
 ### Added

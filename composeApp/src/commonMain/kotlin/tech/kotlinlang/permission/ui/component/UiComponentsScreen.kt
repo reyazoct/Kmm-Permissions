@@ -72,7 +72,8 @@ private fun PdfViewerContent(modifier: Modifier) {
         modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
-        val pdfViewerState by rememberPdfViewerState("https://kotlinlang.org/docs/kotlin-reference.pdf")
+//        val pdfViewerState by rememberPdfViewerState("https://kotlinlang.org/docs/kotlin-reference.pdf")
+        val pdfViewerState by rememberPdfViewerState("https://s3.ap-south-1.amazonaws.com/data.silvercross.in/batch_certificates/TSC-250645.pdf")
         PdfViewer(
             modifier = Modifier
                 .fillMaxWidth()
