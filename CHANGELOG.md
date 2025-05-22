@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Create UI for pdf viewer in Android in PDFViewer module
+- Create UI for pdf viewer in iOS in PDFViewer module
 
 ---
 

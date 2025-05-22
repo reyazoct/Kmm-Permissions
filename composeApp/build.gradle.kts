@@ -51,6 +51,9 @@ kotlin {
             implementation(project(":ui"))
             implementation(project(":pdfviewer"))
         }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
     }
 }
 
