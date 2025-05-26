@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.10.0] - 2025-05-26
 
 ### Improvements
 - Add Image to take full width in iOS in PDFViewer module
