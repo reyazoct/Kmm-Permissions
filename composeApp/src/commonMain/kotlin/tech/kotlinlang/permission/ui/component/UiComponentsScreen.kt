@@ -4,8 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,9 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import quantityChanger.QuantityChanger
 import quantityChanger.QuantityChangerConfig
-import tech.kotlinlang.pdfviewer.PdfViewer
-import tech.kotlinlang.pdfviewer.PdfViewerState
-import tech.kotlinlang.pdfviewer.rememberPdfViewerState
 import tech.kotlinlang.ui.amountText.AmountText
 import tech.kotlinlang.ui.amountText.AmountTextConfig
 import tech.kotlinlang.ui.amountText.AmountTextConfigLocal
@@ -60,26 +55,6 @@ fun UiComponentsScreen() {
         item {
             QuantityChangerContent(commonModifier)
         }
-        item {
-            PdfViewerContent(commonModifier)
-        }
-    }
-}
-
-@Composable
-private fun PdfViewerContent(modifier: Modifier) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center,
-    ) {
-//        val pdfViewerState by rememberPdfViewerState("https://kotlinlang.org/docs/kotlin-reference.pdf")
-        val pdfViewerState by rememberPdfViewerState("https://s3.ap-south-1.amazonaws.com/data.silvercross.in/batch_certificates/TSC-250645.pdf")
-        PdfViewer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1F),
-            pdfViewerState = pdfViewerState
-        )
     }
 }
 

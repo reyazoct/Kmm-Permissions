@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Improvements
 - Add Image to take full width in iOS in PDFViewer module
+- Add option to show UI components module is Wasm also
 
 ---
 
