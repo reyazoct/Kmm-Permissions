@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add logic to show KImage in Android
+
+---
+
 ## [0.10.0] - 2025-05-26
 
 ### Improvements

@@ -73,6 +73,7 @@ kotlin {
                 implementation(project(":camera"))
                 implementation(project(":camera-qr"))
                 implementation(project(":pdfviewer"))
+                implementation(project(":image"))
             }
             dependsOn(commonMain)
         }
