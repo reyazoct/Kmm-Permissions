@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Add logic to show KImage in Android
+- Add logic to show KImage in iOS
 
 ---
 
