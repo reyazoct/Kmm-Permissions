@@ -16,8 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -70,15 +69,17 @@ fun rememberKImageState(kImageType: KImageType): State<KImageState> {
 }
 
 internal suspend fun downloadImage(url: String): ImageBitmap? {
-    return withContext(Dispatchers.IO) {
+    return withContext(currentCoroutineDispatcher) {
         val client = HttpClient()
         return@withContext try {
             val response = client.get(url)
             response.body<ByteArray>().toImageBitmap()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
 }
 
-internal expect fun ByteArray.toImageBitmap(): ImageBitmap?
+internal expect suspend fun ByteArray.toImageBitmap(): ImageBitmap?
+
+internal expect val currentCoroutineDispatcher: CoroutineDispatcher

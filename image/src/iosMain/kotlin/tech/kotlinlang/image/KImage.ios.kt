@@ -8,6 +8,9 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.get
 import kotlinx.cinterop.usePinned
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.Image
@@ -28,7 +31,7 @@ import platform.Foundation.create
 import platform.UIKit.UIImage
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
-actual fun ByteArray.toImageBitmap(): ImageBitmap? {
+actual suspend fun ByteArray.toImageBitmap(): ImageBitmap? {
     val nsData = NSData.create(bytes = this.usePinned { it.addressOf(0) }, length = this.size.toULong())
     val uiImage = UIImage(data = nsData)
     return uiImage.imageBitmap
@@ -69,3 +72,5 @@ private val UIImage.imageBitmap: ImageBitmap?
         return skiaImage.toComposeImageBitmap()
     }
 
+actual val currentCoroutineDispatcher: CoroutineDispatcher
+    get() = Dispatchers.IO

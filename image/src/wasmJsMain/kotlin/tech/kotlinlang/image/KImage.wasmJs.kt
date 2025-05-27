@@ -1,14 +1,14 @@
 package tech.kotlinlang.image
 
-import android.graphics.BitmapFactory
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toComposeImageBitmap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import org.jetbrains.skia.Image
 
 actual suspend fun ByteArray.toImageBitmap(): ImageBitmap? {
-    return BitmapFactory.decodeByteArray(this, 0, size).asImageBitmap()
+    return Image.makeFromEncoded(this).toComposeImageBitmap()
 }
 
 actual val currentCoroutineDispatcher: CoroutineDispatcher
-    get() = Dispatchers.IO
+    get() = Dispatchers.Main

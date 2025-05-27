@@ -63,6 +63,7 @@ kotlin {
                 implementation(libs.ktor.client.core)
 
                 implementation(project(":ui"))
+                implementation(project(":image"))
             }
         }
 
@@ -73,7 +74,6 @@ kotlin {
                 implementation(project(":camera"))
                 implementation(project(":camera-qr"))
                 implementation(project(":pdfviewer"))
-                implementation(project(":image"))
             }
             dependsOn(commonMain)
         }
