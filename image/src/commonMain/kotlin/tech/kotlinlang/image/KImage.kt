@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -70,16 +71,22 @@ fun rememberKImageState(kImageType: KImageType): State<KImageState> {
 
 internal suspend fun downloadImage(url: String): ImageBitmap? {
     return withContext(currentCoroutineDispatcher) {
-        val client = HttpClient()
-        return@withContext try {
-            val response = client.get(url)
-            response.body<ByteArray>().toImageBitmap()
-        } catch (_: Exception) {
-            null
+        return@withContext storedMap.getOrElse(url) {
+            val client = HttpClient()
+            return@withContext try {
+                val response = client.get(url)
+                response.body<ByteArray>().toImageBitmap()
+            } catch (_: Exception) {
+                null
+            }?.also { storedMap.put(url, it) }
         }
     }
 }
 
+private val storedMap = mutableMapOf<String, ImageBitmap>()
+
 internal expect suspend fun ByteArray.toImageBitmap(): ImageBitmap?
 
 internal expect val currentCoroutineDispatcher: CoroutineDispatcher
+
+val KImageConfigLocal = staticCompositionLocalOf<KImageConfig> { object : KImageConfig {} }

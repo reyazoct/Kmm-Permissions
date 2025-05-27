@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Add logic to show KImage in Android
 - Add logic to show KImage in iOS
 - Add logic to show KImage in Wasm
+- Add Single Instance cache on image library in Image module
 
 ---
 

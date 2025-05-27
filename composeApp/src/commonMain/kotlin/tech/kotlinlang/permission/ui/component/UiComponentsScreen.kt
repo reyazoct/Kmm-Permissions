@@ -83,7 +83,6 @@ private fun ImageContent(modifier: Modifier) {
     }
 }
 
-
 @Composable
 private fun QuantityChangerContent(modifier: Modifier) {
     Box(
