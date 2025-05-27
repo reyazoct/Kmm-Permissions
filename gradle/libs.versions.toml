@@ -21,7 +21,7 @@ runner = "1.6.2"
 core = "1.6.1"
 bar-code-scanning = "17.2.0"
 ktor = "3.1.0"
-library-version = "0.10.0"
+library-version = "0.11.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
