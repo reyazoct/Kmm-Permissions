@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import tech.kotlinlang.camera.analyser.ImageAnalyser
 
@@ -26,5 +27,10 @@ class WasmCameraHelper: CameraHelper {
     }
 
     override fun enableFlash(switchOn: Boolean) {
+        throw NotImplementedError()
+    }
+
+    override suspend fun captureImage(): ImageBitmap {
+        throw NotImplementedError()
     }
 }

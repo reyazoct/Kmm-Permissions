@@ -1,7 +1,7 @@
 package tech.kotlinlang.permission.ui.camera
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -23,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -38,6 +39,8 @@ fun CameraScreen() {
         Spacer(Modifier.height(12.dp))
 
         val qrCodeImageAnalyser = remember { QrCodeImageAnalyserHolder.getInstance() }
+
+        var capturedImage by remember { mutableStateOf<ImageBitmap?>(null) }
         var extractedString by remember { mutableStateOf<String?>(null) }
         LaunchedEffect(Unit) {
             qrCodeImageAnalyser.setListener {
@@ -59,31 +62,57 @@ fun CameraScreen() {
                 ),
             )
         }
-        cameraHelper.CameraContent(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1F),
-            imageAnalyser = qrCodeImageAnalyser
-        )
-        Box(
+        val currentImage = capturedImage
+        if (currentImage == null) {
+            cameraHelper.CameraContent(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1F),
+                imageAnalyser = qrCodeImageAnalyser
+            )
+        } else {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1F),
+                bitmap = currentImage,
+                contentDescription = null
+            )
+        }
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            contentAlignment = Alignment.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            var flashOn by remember { mutableStateOf(false) }
             val scope = rememberCoroutineScope()
             Button(
                 onClick = {
                     scope.launch {
-                        cameraHelper.enableFlash(!flashOn)
-                        flashOn = !flashOn
+                        capturedImage = if (capturedImage == null) cameraHelper.captureImage()
+                        else null
                     }
                 }
             ) {
                 Text(
-                    text = if (flashOn) "Turn Off Flash" else "Turn On Flash"
+                    text = if (capturedImage == null) "Capture Image" else "Go to camera"
                 )
+            }
+            Spacer(Modifier.height(8.dp))
+            AnimatedVisibility(capturedImage == null) {
+                var flashOn by remember { mutableStateOf(false) }
+                Button(
+                    onClick = {
+                        scope.launch {
+                            cameraHelper.enableFlash(!flashOn)
+                            flashOn = !flashOn
+                        }
+                    }
+                ) {
+                    Text(
+                        text = if (flashOn) "Turn Off Flash" else "Turn On Flash"
+                    )
+                }
             }
         }
     }
