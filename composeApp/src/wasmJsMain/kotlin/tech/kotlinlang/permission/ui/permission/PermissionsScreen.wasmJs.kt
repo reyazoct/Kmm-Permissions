@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import tech.kotlinlang.permission.HelperHolder
 import tech.kotlinlang.permission.Permission
 import tech.kotlinlang.permission.result.CameraPermissionResult
+import tech.kotlinlang.permission.result.LocationPermissionResult
 import tech.kotlinlang.permission.result.NotificationPermissionResult
 
 @Composable
@@ -67,6 +68,9 @@ actual fun PermissionsScreen(onCameraClick: () -> Unit) {
         }
         item {
             NotificationPermissionContent(commonModifier)
+        }
+        item {
+            LocationPermissionContent(commonModifier)
         }
     }
 }
@@ -175,4 +179,55 @@ private fun NotificationPermissionContent(
         }
     }
 }
+
+@Composable
+private fun LocationPermissionContent(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        var locationPermissionResult by remember {
+            mutableStateOf<LocationPermissionResult>(
+                LocationPermissionResult.Denied
+            )
+        }
+
+        val scope = rememberCoroutineScope()
+        val permissionHelper = remember { HelperHolder.getPermissionHelperInstance() }
+        LaunchedEffect(Unit) {
+            scope.launch {
+                locationPermissionResult =
+                    permissionHelper.checkIsPermissionGranted(Permission.Location)
+            }
+        }
+
+        when (locationPermissionResult) {
+            LocationPermissionResult.Denied -> {
+                Text("Location Permission is not allowed yet")
+                Button(
+                    onClick = {
+                        scope.launch {
+                            locationPermissionResult = permissionHelper.requestForPermission(Permission.Location)
+                        }
+                    },
+                ) {
+                    Text("Allow Permission")
+                }
+            }
+
+            LocationPermissionResult.NotAllowed -> {
+                Text("Location Permission is Not Allowed")
+            }
+
+            LocationPermissionResult.Granted.Approximate -> {
+                Text("Approximate Location Permission is Granted")
+            }
+
+            LocationPermissionResult.Granted.Precise -> {
+                Text("Precise Location Permission is Granted")
+            }
+        }
+    }
+}
+
 

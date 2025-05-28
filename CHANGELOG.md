@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add logic to check camera permission in WasmJs in Permission module
 - Add logic to ask and check Notification Permission in Permission module
+- Add option to check and ask location permission in Permission module
 
 ---
 
