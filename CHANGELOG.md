@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Add coming soon mock for PDF viewer in PDF viewer module
+- Add dummy UI in camera screen and qr analyser for wasmJs
+
 ## [0.12.0] - 2025-05-28
 
 ### Added

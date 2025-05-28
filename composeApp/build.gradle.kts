@@ -66,15 +66,14 @@ kotlin {
                 implementation(project(":image"))
                 implementation(project(":permission"))
                 implementation(project(":pdfviewer"))
+                implementation(project(":camera"))
+                implementation(project(":camera-qr"))
             }
         }
 
         val commonMobile by creating {
             kotlin.srcDir("src/commonMobile/kotlin")
             dependencies {
-                implementation(project(":permission"))
-                implementation(project(":camera"))
-                implementation(project(":camera-qr"))
             }
             dependsOn(commonMain)
         }
