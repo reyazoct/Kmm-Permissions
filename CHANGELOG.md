@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.12.0] - 2025-05-28
 
 ### Added
 - Add logic to check camera permission in WasmJs in Permission module
