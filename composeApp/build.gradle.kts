@@ -65,6 +65,7 @@ kotlin {
                 implementation(project(":ui"))
                 implementation(project(":image"))
                 implementation(project(":permission"))
+                implementation(project(":pdfviewer"))
             }
         }
 
@@ -74,7 +75,6 @@ kotlin {
                 implementation(project(":permission"))
                 implementation(project(":camera"))
                 implementation(project(":camera-qr"))
-                implementation(project(":pdfviewer"))
             }
             dependsOn(commonMain)
         }

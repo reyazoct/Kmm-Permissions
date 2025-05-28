@@ -5,11 +5,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.http.isSuccess
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -26,17 +26,26 @@ fun rememberPdfViewerState(url: String): State<PdfViewerState> {
 }
 
 internal suspend fun downloadPdfFromUrl(url: String): PdfViewerState {
-    return withContext(Dispatchers.IO) {
-        val client = PdfViewerConfig.requireClient()
-        val response = client.get(url)
+    return withContext(currentCoroutineDispatcher) {
+        val client = httpClient
         return@withContext try {
-            if (!response.status.isSuccess()) {
+            val response = client.get(url)
+            if (response.status.isSuccess()) {
+                PdfViewerState.Success(response.body())
+            } else {
                 PdfViewerState.Error("Failed to load PDF: ${response.status}")
             }
-            PdfViewerState.Success(response.body())
         } catch (e: Exception) {
             PdfViewerState.Error("Failed to load PDF: ${e.message}")
         }
     }
 }
+
+private val httpClient: HttpClient
+    get() = nullableHttpClient ?: HttpClient().also { nullableHttpClient = it }
+
+private var nullableHttpClient: HttpClient? = null
+
+expect val currentCoroutineDispatcher: CoroutineDispatcher
+
 
