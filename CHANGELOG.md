@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.12.2] - 2025-05-29
 
 ### Added
 - Add option to capture image in Android and iOS in Camera module
