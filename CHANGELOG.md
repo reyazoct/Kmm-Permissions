@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.12.1] - 2025-05-28
 
 ### Added
 - Add coming soon mock for PDF viewer in PDF viewer module
