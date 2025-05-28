@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import tech.kotlinlang.permission.HelperHolder
 import tech.kotlinlang.permission.Permission
 import tech.kotlinlang.permission.result.CameraPermissionResult
+import tech.kotlinlang.permission.result.NotificationPermissionResult
 
 @Composable
 actual fun PermissionsScreen(onCameraClick: () -> Unit) {
@@ -63,6 +64,9 @@ actual fun PermissionsScreen(onCameraClick: () -> Unit) {
                 modifier = commonModifier,
                 onCameraClick = onCameraClick,
             )
+        }
+        item {
+            NotificationPermissionContent(commonModifier)
         }
     }
 }
@@ -124,3 +128,51 @@ private fun CameraPermissionContent(
         }
     }
 }
+
+@Composable
+private fun NotificationPermissionContent(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        var notificationPermissionResult by remember {
+            mutableStateOf<NotificationPermissionResult>(
+                NotificationPermissionResult.Denied
+            )
+        }
+
+        val scope = rememberCoroutineScope()
+        val permissionHelper = remember { HelperHolder.getPermissionHelperInstance() }
+        LaunchedEffect(Unit) {
+            scope.launch {
+                notificationPermissionResult = permissionHelper.checkIsPermissionGranted(Permission.Notification)
+            }
+        }
+
+        when (notificationPermissionResult) {
+            NotificationPermissionResult.Denied -> {
+                Text("Notification Permission is not allowed yet")
+                Button(
+                    onClick = {
+                        scope.launch {
+                            notificationPermissionResult = permissionHelper.requestForPermission(Permission.Notification)
+                        }
+                    },
+                ) {
+                    Text("Allow Permission")
+                }
+            }
+
+            NotificationPermissionResult.NotAllowed -> {
+                Text("Notification Permission is Not Allowed")
+            }
+
+            NotificationPermissionResult.Granted -> {
+                Text("Notification Permission is Granted")
+            }
+        }
+    }
+}
+

@@ -45,6 +45,13 @@ kotlin {
     wasmJs {
         browser {
             binaries.executable()
+            browser {
+                commonWebpackConfig {
+                    cssSupport {
+                        enabled = true
+                    }
+                }
+            }
         }
     }
 
@@ -75,6 +82,7 @@ kotlin {
         }
 
         wasmJsMain.dependencies {
+//            implementation(kotlin("wasmStdlib"))
         }
     }
 }
