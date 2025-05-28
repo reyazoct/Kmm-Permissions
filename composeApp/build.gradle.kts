@@ -64,6 +64,7 @@ kotlin {
 
                 implementation(project(":ui"))
                 implementation(project(":image"))
+                implementation(project(":permission"))
             }
         }
 

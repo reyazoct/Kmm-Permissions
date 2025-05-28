@@ -1,4 +1,5 @@
 import com.vanniktech.maven.publish.SonatypeHost
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
@@ -40,6 +41,13 @@ kotlin {
         }
     }
 
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser {
+            binaries.executable()
+        }
+    }
+
     // Source set declarations.
     // Declaring a target automatically creates a source set with the same name. By default, the
     // Kotlin Gradle Plugin creates additional source sets that depend on each other, since it is
@@ -64,6 +72,9 @@ kotlin {
             // part of KMP’s default source set hierarchy. Note that this source set depends
             // on common by default and will correctly pull the iOS artifacts of any
             // KMP dependencies declared in commonMain.
+        }
+
+        wasmJsMain.dependencies {
         }
     }
 }
