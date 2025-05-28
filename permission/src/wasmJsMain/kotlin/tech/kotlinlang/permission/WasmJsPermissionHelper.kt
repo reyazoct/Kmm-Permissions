@@ -8,6 +8,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import tech.kotlinlang.permission.result.CameraPermissionResult
 import tech.kotlinlang.permission.result.LocationPermissionResult
 import tech.kotlinlang.permission.result.NotificationPermissionResult
+import tech.kotlinlang.permission.result.RecordAudioPermissionResult
 import kotlin.js.Promise
 import kotlin.coroutines.resume
 
@@ -21,6 +22,15 @@ private fun askNotificationPermission(): Promise<JsString> = js("Notification.re
 
 private fun locationPermissionQuery(): Promise<JsAny> = js("navigator.permissions.query({ name: 'geolocation' })")
 
+external interface JsGeolocationPosition : JsAny {
+    val coords: JsGeolocationCoordinates
+}
+
+external interface JsGeolocationCoordinates : JsAny {
+    val latitude: Double
+    val longitude: Double
+}
+
 @JsFun(
     """
        (success, error) => {
@@ -28,7 +38,11 @@ private fun locationPermissionQuery(): Promise<JsAny> = js("navigator.permission
        }
        """
 )
-external fun getCurrentPosition(success: (JsAny) -> Unit, error: (JsAny) -> Unit)
+external fun getCurrentPosition(success: (JsGeolocationPosition) -> Unit, error: (JsAny) -> Unit)
+
+private fun audioPermissionQuery(): Promise<JsAny> = js("navigator.permissions.query({ name: 'microphone' })")
+
+private fun askAudioPermission(): Promise<JsAny> = js("navigator.mediaDevices.getUserMedia({ audio: true })")
 
 external interface StatusData : JsAny {
     val state: String
@@ -36,20 +50,22 @@ external interface StatusData : JsAny {
 
 class WasmJsPermissionHelper : PermissionHelper {
     override suspend fun <T> checkIsPermissionGranted(permission: Permission<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return when (permission) {
             Permission.Camera -> checkCameraPermission()
             Permission.Notification -> checkNotificationPermission()
             Permission.Location -> checkLocationPermission()
-            else -> TODO("Not yet implemented")
+            Permission.RecordAudio -> checkAudioPermission()
         } as T
     }
 
     override suspend fun <T> requestForPermission(permission: Permission<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return when (permission) {
             Permission.Camera -> requestCameraPermission()
             Permission.Notification -> requestNotificationPermission()
             Permission.Location -> requestLocationPermission()
-            else -> TODO("Not yet implemented")
+            Permission.RecordAudio -> requestAudioPermission()
         } as T
     }
 
@@ -113,4 +129,23 @@ class WasmJsPermissionHelper : PermissionHelper {
             )
         }
     }
+
+    private suspend fun checkAudioPermission(): RecordAudioPermissionResult {
+        val statusData = audioPermissionQuery().await<JsAny>().unsafeCast<StatusData>()
+        return when (statusData.state) {
+            "granted" -> RecordAudioPermissionResult.Granted
+            "denied" -> RecordAudioPermissionResult.NotAllowed
+            "prompt" -> RecordAudioPermissionResult.Denied
+            else -> throw IllegalStateException("Unknown state: ${statusData.state}")
+        }
+    }
+
+    private suspend fun requestAudioPermission(): RecordAudioPermissionResult {
+        try {
+            askAudioPermission().await<JsAny>()
+        } catch (_: Throwable) {
+        }
+        return checkAudioPermission()
+    }
+
 }

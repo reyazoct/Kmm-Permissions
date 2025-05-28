@@ -13,5 +13,5 @@ actual fun getPermissionHelper(): PermissionHelper {
 }
 
 actual fun getLocationHelper(): LocationHelper {
-    return WasmJsLocationHelper()
+    return WasmJsLocationHelper(HelperHolder.getPermissionHelperInstance())
 }
